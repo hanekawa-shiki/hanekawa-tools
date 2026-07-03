@@ -31,7 +31,7 @@ function getAllTools(): ToolItem[] {
     tools.push({
       title: meta.title ?? path,
       description: meta.description ?? '',
-      icon: meta.icon !== undefined ? resolveIcon(meta.icon) : undefined,
+      icon: meta.icon !== undefined ? resolveIcon(meta.icon, 'size-full') : undefined,
       url: path,
     });
   }
@@ -45,19 +45,25 @@ export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col gap-6 pt-4">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">工具集合</h1>
+        <h1 className="text-2xl font-bold tracking-tight">工具列表</h1>
         <p className="text-sm text-muted-foreground">请选择要使用的工具</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (
           <Link key={tool.url} to={tool.url} className="block">
             <Card className="transition-colors hover:bg-accent/50">
-              <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-                {tool.icon != null && <div className="text-muted-foreground">{tool.icon}</div>}
-                <div className="flex-1 space-y-1">
-                  <CardTitle className="text-base">{tool.title}</CardTitle>
-                  {tool.description && <CardDescription>{tool.description}</CardDescription>}
-                </div>
+              <CardHeader className="gap-3">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  {tool.icon != null && (
+                    <div className="size-8 text-muted-foreground">{tool.icon}</div>
+                  )}
+                  {tool.title}
+                </CardTitle>
+                {tool.description && (
+                  <CardDescription className="break-al line-clamp-2 h-10">
+                    {tool.description}
+                  </CardDescription>
+                )}
               </CardHeader>
             </Card>
           </Link>

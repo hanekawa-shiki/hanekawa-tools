@@ -26,23 +26,29 @@ const config: RouterConfig = {
       icon: 'Home',
       hidden: true,
     },
-    '/calendar': {
-      title: '万年历',
+    '/query/calendar': {
+      title: '日历',
       icon: 'Calendar',
-      description: '功能丰富的在线万年历工具，支持公历、农历日期查询与转换。',
+      description: '提供公历、农历日期查询。',
     },
     '/transform/torrent2magnet': {
       title: '种子转磁力链',
       icon: 'Magnet',
-      description: '将 Torrent 种子文件快速转换为磁力链接，方便直接下载。',
+      description:
+        '将 Torrent 种子文件快速转换为磁力链接，方便直接下载。支持批量转换及 Magnet 导出到文件',
     },
   },
 
   // 目录级（父级）菜单配置（key 为 pages/ 下的目录名）
   dirMeta: {
     transform: {
-      title: '开发工具',
-      icon: 'Wrench',
+      title: '转换',
+      icon: 'ArrowLeftRight',
+      isActive: true,
+    },
+    query: {
+      title: '查询',
+      icon: 'Binoculars',
       isActive: true,
     },
   },
