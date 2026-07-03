@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export function htmlBuildTimePlugin(): Plugin {
+export default function htmlBuildTimePlugin(): Plugin {
   return {
     name: 'html-build-time-plugin',
     apply: 'build',
