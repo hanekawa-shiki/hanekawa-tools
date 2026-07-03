@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc -b && vite build",
+    "build:cf": "tsc -b && vite build --mode cf",
+    "build:gh": "tsc -b && vite build --mode gh",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
