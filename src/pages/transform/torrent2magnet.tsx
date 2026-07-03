@@ -1,0 +1,196 @@
+import type parseTorrent from 'parse-torrent';
+import dayjs from 'dayjs';
+import { Check, Copy, Download, FileInput, FileText, Magnet } from 'lucide-react';
+import { remote as parseTorrentRemote, toMagnetURI } from 'parse-torrent';
+import { useCallback, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+const MAX_FILES = 100;
+
+/**
+ * 将 .torrent 文件解析为已解析的 torrent 实例。
+ * parse-torrent 实际上是异步的，但 @types/parse-torrent
+ * 将默认导出类型定义为同步，因此我们改用 remote()。
+ */
+async function parseTorrentFile(file: File): Promise<parseTorrent.Instance> {
+  return new Promise((resolve, reject) => {
+    parseTorrentRemote(file, (err, torrent) => {
+      if (err !== undefined && err !== null) {
+        reject(err);
+      } else if (torrent === undefined || torrent === null) {
+        reject(new Error('Invalid torrent file'));
+      } else {
+        resolve(torrent);
+      }
+    });
+  });
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(setCopied, 1500, false);
+    });
+  }, [text]);
+
+  return (
+    <div
+      onClick={handleCopy}
+      title="复制"
+      className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground"
+    >
+      {copied ? <Check className="size-4 text-green-600" /> : <Copy className="size-4" />}
+    </div>
+  );
+}
+
+export default function Torrent2Magnet() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [torrents, setTorrents] = useState<TorrentInfo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    if (files.length > MAX_FILES) {
+      setErrorMsg(`单次最多允许选择 ${MAX_FILES} 个文件，当前已选择 ${files.length} 个`);
+      return;
+    }
+
+    setErrorMsg('');
+
+    const processFiles = async () => {
+      setLoading(true);
+      const results: TorrentInfo[] = [];
+
+      for (const file of Array.from(files)) {
+        try {
+          const torrent = await parseTorrentFile(file);
+          const magnet = toMagnetURI(torrent);
+          results.push({
+            fileName: file.name,
+            magnet,
+          });
+        } catch {
+          results.push({
+            fileName: file.name,
+            magnet: `[解析失败] ${file.name}`,
+          });
+        }
+      }
+
+      setTorrents(results);
+      setLoading(false);
+
+      // 重置文件输入框，以便可以再次选择同一文件
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    };
+
+    void processFiles();
+  }, []);
+
+  const handleExportToFile = useCallback(() => {
+    const content = torrents.map((t) => t.magnet).join('\n');
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `magnets_${dayjs().format('YYYYMMDDHHmmss')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [torrents]);
+
+  const handleCopyAll = useCallback(() => {
+    const content = torrents.map((t) => t.magnet).join('\n');
+    void navigator.clipboard.writeText(content);
+  }, [torrents]);
+
+  return (
+    <div className="size-full">
+      <div className="mt-4 flex items-center gap-3">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".torrent"
+          multiple
+          className="hidden"
+          onChange={handleFileSelect}
+        />
+        <Button size="lg" onClick={() => fileInputRef.current?.click()} disabled={loading}>
+          <FileInput className="size-4" />
+          {loading ? '解析中...' : '选择Torrent文件'}
+        </Button>
+        {torrents.length > 0 && (
+          <span className="text-sm text-muted-foreground">
+            已选择
+            {torrents.length} 个文件
+          </span>
+        )}
+      </div>
+
+      {errorMsg && <div className="mt-2 text-sm text-destructive">{errorMsg}</div>}
+
+      {torrents.length > 0 && (
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Torrent 文件列表 */}
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="size-4" />
+              Torrent
+            </div>
+            <div className="space-y-2 rounded-lg border p-3">
+              {torrents.map((t) => (
+                <div
+                  key={`file-${t.fileName}`}
+                  className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
+                >
+                  <FileText className="size-4 shrink-0 text-muted-foreground" />
+                  <span className="truncate">{t.fileName}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Magnet 链接列表 */}
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Magnet className="size-4" />
+              Magnet
+            </div>
+            <div className="space-y-2 rounded-lg border p-3">
+              {torrents.map((t) => (
+                <div
+                  key={`magnet-${t.magnet}`}
+                  className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
+                >
+                  <CopyButton text={t.magnet} />
+                  <span className="min-w-0 flex-1 truncate text-sm">{t.magnet}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={handleExportToFile}>
+                <Download />
+                导出内容到文件
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleCopyAll}>
+                <Copy />
+                全部复制到剪切版
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
