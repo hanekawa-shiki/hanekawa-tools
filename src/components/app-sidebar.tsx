@@ -26,7 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           />
           {/* 文字区域：居中上下排列 */}
           <div className="flex flex-col items-center text-center leading-tight">
-            <span className="text-sm font-semibold">Hanekawa Toolset</span>
+            <span className="text-sm font-semibold">Hanekawa Tools</span>
             <span
               className="mt-0.5 text-xs text-muted-foreground"
               title="我不是无所不知，只是刚好知道而已。"

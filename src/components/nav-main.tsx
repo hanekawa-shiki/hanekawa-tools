@@ -18,7 +18,7 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map(item => (
+        {items.map((item) => (
           <NavMenuItem key={item.title} item={item} />
         ))}
       </SidebarMenu>
@@ -57,40 +57,39 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
           onNavigate={closeMobileSidebar}
         />
 
-        {isParent
-          ? (
-              <>
-                <CollapsibleTrigger ref={triggerRef} asChild>
-                  <SidebarMenuAction className="data-[state=open]:rotate-90">
-                    <ChevronRightIcon />
-                    <span className="sr-only">Toggle</span>
-                  </SidebarMenuAction>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items!.map(subItem => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={location.pathname === subItem.url}
-                          onClick={closeMobileSidebar}
-                        >
-                          <NavLink
-                            to={subItem.url}
-                            className={({ isActive: active }) =>
-                              active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
-                          >
-                            {subItem.icon}
-                            <span>{subItem.title}</span>
-                          </NavLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </>
-            )
-          : null}
+        {isParent ? (
+          <>
+            <CollapsibleTrigger ref={triggerRef} asChild>
+              <SidebarMenuAction className="data-[state=open]:rotate-90">
+                <ChevronRightIcon />
+                <span className="sr-only">Toggle</span>
+              </SidebarMenuAction>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {item.items!.map((subItem) => (
+                  <SidebarMenuSubItem key={subItem.title}>
+                    <SidebarMenuSubButton
+                      asChild
+                      isActive={location.pathname === subItem.url}
+                      onClick={closeMobileSidebar}
+                    >
+                      <NavLink
+                        to={subItem.url}
+                        className={({ isActive: active }) =>
+                          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
+                        }
+                      >
+                        {subItem.icon}
+                        <span>{subItem.title}</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </>
+        ) : null}
       </SidebarMenuItem>
     </Collapsible>
   );
@@ -129,7 +128,8 @@ function NavMenuButton({
       <NavLink
         to={item.url}
         className={({ isActive: active }) =>
-          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
+          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
+        }
       >
         {item.icon}
         {item.title}

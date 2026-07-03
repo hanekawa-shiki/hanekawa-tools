@@ -146,5 +146,5 @@ const holidaysByYear: Record<number, Holiday[]> = {
 export function getHolidayInfo(month: number, day: number, year: number): Holiday | undefined {
   const holidays = holidaysByYear[year] ?? [];
   const md = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  return holidays.find(h => h.date === md);
+  return holidays.find((h) => h.date === md);
 }

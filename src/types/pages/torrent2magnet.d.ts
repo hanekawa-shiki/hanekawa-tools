@@ -25,9 +25,9 @@ declare global {
   }
 
   interface DecodedTorrent {
-    'announce': Buffer;
+    announce: Buffer;
     'announce-list'?: Buffer[][];
-    'info': {
+    info: {
       name: Buffer;
       length?: number;
       files?: DecodedTorrentFile[];

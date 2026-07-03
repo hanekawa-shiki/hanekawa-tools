@@ -22,8 +22,7 @@ function getWeekStart(): 0 | 6 {
   try {
     const val = localStorage.getItem(WEEK_START_KEY);
     return val === '6' ? 6 : 0;
-  }
-  catch {
+  } catch {
     return 0;
   }
 }
@@ -31,8 +30,7 @@ function getWeekStart(): 0 | 6 {
 function setWeekStart(val: 0 | 6) {
   try {
     localStorage.setItem(WEEK_START_KEY, String(val));
-  }
-  catch {
+  } catch {
     /* ignore */
   }
 }
@@ -178,7 +176,7 @@ function SingleMonthGrid({
             className={cn(
               'text-center text-xs text-muted-foreground',
               i === 0 && weekStart === 6 && 'text-red-400',
-              i === 6 && weekStart === 0 && 'text-red-400',
+              i === 6 && weekStart === 0 && 'text-red-400'
             )}
           >
             {name}
@@ -200,13 +198,11 @@ function SingleMonthGrid({
             // 调休上班：灰色
             tagText = '班';
             tagClass = 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-300';
-          }
-          else if (cell.isHoliday) {
+          } else if (cell.isHoliday) {
             // 法定节假日：深红色
             tagText = '休';
             tagClass = 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
-          }
-          else if (cell.isWeekend) {
+          } else if (cell.isWeekend) {
             // 普通周末：淡红色
             tagText = '休';
             tagClass = 'bg-red-50 text-red-400 dark:bg-red-950 dark:text-red-400';
@@ -217,8 +213,7 @@ function SingleMonthGrid({
           if (!cell.isSelected) {
             if (cell.isHoliday) {
               cellBg = 'bg-red-100/60 dark:bg-red-900/30';
-            }
-            else if (cell.isWeekend && !cell.isWorkday) {
+            } else if (cell.isWeekend && !cell.isWorkday) {
               cellBg = 'bg-red-50/60 dark:bg-red-950/20';
             }
           }
@@ -229,15 +224,16 @@ function SingleMonthGrid({
               role="button"
               tabIndex={cell.day > 0 ? 0 : undefined}
               onClick={() =>
-                cell.day > 0
-                && onSelectDate(
-                  `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`,
-                )}
+                cell.day > 0 &&
+                onSelectDate(
+                  `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`
+                )
+              }
               onKeyDown={(e) => {
                 if ((e.key === 'Enter' || e.key === ' ') && cell.day > 0) {
                   e.preventDefault();
                   onSelectDate(
-                    `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`,
+                    `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`
                   );
                 }
               }}
@@ -247,15 +243,15 @@ function SingleMonthGrid({
                 cellBg,
                 cell.isSelected && 'bg-primary text-primary-foreground',
                 !cell.isSelected && cell.isToday && 'border-primary bg-primary/5',
-                cell.holidayName !== ''
-                && !cell.isHoliday
-                && !cell.isWorkday
-                && 'text-red-500 dark:text-red-400',
-                !cell.isSelected
-                && !cell.isHoliday
-                && cell.solarTerm !== ''
-                && 'text-green-600 dark:text-green-400',
-                cell.isSelected && 'text-primary-foreground',
+                cell.holidayName !== '' &&
+                  !cell.isHoliday &&
+                  !cell.isWorkday &&
+                  'text-red-500 dark:text-red-400',
+                !cell.isSelected &&
+                  !cell.isHoliday &&
+                  cell.solarTerm !== '' &&
+                  'text-green-600 dark:text-green-400',
+                cell.isSelected && 'text-primary-foreground'
               )}
             >
               {/* 左上角：休/班标签 */}
@@ -264,7 +260,7 @@ function SingleMonthGrid({
                   className={cn(
                     'absolute top-0 left-0 flex size-3.5 items-center justify-center rounded-tl rounded-br text-[7px] leading-none font-bold',
                     tagClass,
-                    cell.isSelected && 'bg-primary-foreground text-primary',
+                    cell.isSelected && 'bg-primary-foreground text-primary'
                   )}
                 >
                   {tagText}
@@ -276,49 +272,45 @@ function SingleMonthGrid({
                   'mt-1 text-sm',
                   !cell.isSelected && cell.isToday && 'font-bold text-primary',
                   cell.isSelected && 'font-bold text-primary-foreground',
-                  !cell.isSelected
-                  && cell.holidayName !== ''
-                  && !cell.isHoliday
-                  && !cell.isWorkday
-                  && 'font-bold text-red-500 dark:text-red-400',
+                  !cell.isSelected &&
+                    cell.holidayName !== '' &&
+                    !cell.isHoliday &&
+                    !cell.isWorkday &&
+                    'font-bold text-red-500 dark:text-red-400'
                 )}
               >
                 {cell.day}
               </span>
-              {cell.holidayName !== '' && !cell.isWorkday
-                ? (
-                    <span
-                      className={cn(
-                        'text-[10px] leading-tight',
-                        cell.isSelected ? 'text-primary-foreground' : 'text-red-500 dark:text-red-400',
-                      )}
-                    >
-                      {cell.holidayName}
-                    </span>
-                  )
-                : cell.solarTerm !== ''
-                  ? (
-                      <span
-                        className={cn(
-                          'text-[10px] leading-tight',
-                          cell.isSelected
-                            ? 'text-primary-foreground'
-                            : 'text-green-600 dark:text-green-400',
-                        )}
-                      >
-                        {cell.solarTerm}
-                      </span>
-                    )
-                  : (
-                      <span
-                        className={cn(
-                          'text-[10px] leading-tight',
-                          cell.isSelected ? 'text-primary-foreground' : 'text-muted-foreground',
-                        )}
-                      >
-                        {cell.lunar}
-                      </span>
-                    )}
+              {cell.holidayName !== '' && !cell.isWorkday ? (
+                <span
+                  className={cn(
+                    'text-[10px] leading-tight',
+                    cell.isSelected ? 'text-primary-foreground' : 'text-red-500 dark:text-red-400'
+                  )}
+                >
+                  {cell.holidayName}
+                </span>
+              ) : cell.solarTerm !== '' ? (
+                <span
+                  className={cn(
+                    'text-[10px] leading-tight',
+                    cell.isSelected
+                      ? 'text-primary-foreground'
+                      : 'text-green-600 dark:text-green-400'
+                  )}
+                >
+                  {cell.solarTerm}
+                </span>
+              ) : (
+                <span
+                  className={cn(
+                    'text-[10px] leading-tight',
+                    cell.isSelected ? 'text-primary-foreground' : 'text-muted-foreground'
+                  )}
+                >
+                  {cell.lunar}
+                </span>
+              )}
             </div>
           );
         })}
@@ -360,10 +352,7 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
         </span>
         <div className="flex flex-col">
           <span className="text-sm text-muted-foreground">
-            {date.year()}
-            年
-            {date.month() + 1}
-            月
+            {date.year()}年{date.month() + 1}月
           </span>
         </div>
       </div>
@@ -375,8 +364,7 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
           当前为
           {date.year()}
           的第
-          {weekNum}
-          周
+          {weekNum}周
         </div>
       </div>
 
@@ -391,9 +379,7 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
       <div className="rounded-lg bg-muted/50 p-3">
         <div className="mb-1 text-xs font-medium text-muted-foreground">天干地支</div>
         <div className="text-sm">
-          {lunar.yearGanZhi}
-          {' '}
-          <span className="text-muted-foreground">{lunar.yearShengXiao}</span>
+          {lunar.yearGanZhi} <span className="text-muted-foreground">{lunar.yearShengXiao}</span>
         </div>
       </div>
 
@@ -450,7 +436,7 @@ export default function CalendarPage() {
       const newDate = `${newYear}-${String(newMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       setSelectedDate(newDate);
     },
-    [selectedDate],
+    [selectedDate]
   );
 
   const handleYearChange = useCallback(
@@ -459,7 +445,7 @@ export default function CalendarPage() {
       setYear(newYear);
       adjustSelectedDate(newYear, month);
     },
-    [month, adjustSelectedDate],
+    [month, adjustSelectedDate]
   );
 
   const handleMonthChange = useCallback(
@@ -468,7 +454,7 @@ export default function CalendarPage() {
       setMonth(newMonth);
       adjustSelectedDate(year, newMonth);
     },
-    [year, adjustSelectedDate],
+    [year, adjustSelectedDate]
   );
 
   const handleWeekStartChange = useCallback((val: string) => {
@@ -494,11 +480,9 @@ export default function CalendarPage() {
               <SelectValue placeholder="年" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 41 }, (_, i) => now.year() - 20 + i).map(y => (
+              {Array.from({ length: 41 }, (_, i) => now.year() - 20 + i).map((y) => (
                 <SelectItem key={y} value={String(y)}>
-                  {y}
-                  {' '}
-                  年
+                  {y} 年
                 </SelectItem>
               ))}
             </SelectContent>

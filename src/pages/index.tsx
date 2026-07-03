@@ -49,7 +49,7 @@ export default function HomePage() {
         <p className="text-sm text-muted-foreground">请选择要使用的工具</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {tools.map(tool => (
+        {tools.map((tool) => (
           <Link key={tool.url} to={tool.url} className="block">
             <Card className="transition-colors hover:bg-accent/50">
               <CardHeader className="flex flex-row items-center gap-3 space-y-0">

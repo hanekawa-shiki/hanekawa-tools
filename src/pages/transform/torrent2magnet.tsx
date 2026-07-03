@@ -17,11 +17,9 @@ async function parseTorrentFile(file: File): Promise<parseTorrent.Instance> {
     parseTorrentRemote(file, (err, torrent) => {
       if (err !== undefined && err !== null) {
         reject(err);
-      }
-      else if (torrent === undefined || torrent === null) {
+      } else if (torrent === undefined || torrent === null) {
         reject(new Error('Invalid torrent file'));
-      }
-      else {
+      } else {
         resolve(torrent);
       }
     });
@@ -80,8 +78,7 @@ export default function Torrent2Magnet() {
             fileName: file.name,
             magnet,
           });
-        }
-        catch {
+        } catch {
           results.push({
             fileName: file.name,
             magnet: `[解析失败] ${file.name}`,
@@ -102,7 +99,7 @@ export default function Torrent2Magnet() {
   }, []);
 
   const handleExportToFile = useCallback(() => {
-    const content = torrents.map(t => t.magnet).join('\n');
+    const content = torrents.map((t) => t.magnet).join('\n');
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -113,7 +110,7 @@ export default function Torrent2Magnet() {
   }, [torrents]);
 
   const handleCopyAll = useCallback(() => {
-    const content = torrents.map(t => t.magnet).join('\n');
+    const content = torrents.map((t) => t.magnet).join('\n');
     void navigator.clipboard.writeText(content);
   }, [torrents]);
 
@@ -135,9 +132,7 @@ export default function Torrent2Magnet() {
         {torrents.length > 0 && (
           <span className="text-sm text-muted-foreground">
             已选择
-            {torrents.length}
-            {' '}
-            个文件
+            {torrents.length} 个文件
           </span>
         )}
       </div>
@@ -153,7 +148,7 @@ export default function Torrent2Magnet() {
               Torrent
             </div>
             <div className="space-y-2 rounded-lg border p-3">
-              {torrents.map(t => (
+              {torrents.map((t) => (
                 <div
                   key={`file-${t.fileName}`}
                   className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
@@ -172,7 +167,7 @@ export default function Torrent2Magnet() {
               Magnet
             </div>
             <div className="space-y-2 rounded-lg border p-3">
-              {torrents.map(t => (
+              {torrents.map((t) => (
                 <div
                   key={`magnet-${t.magnet}`}
                   className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"

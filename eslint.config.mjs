@@ -76,23 +76,15 @@ const classNameTrimPlugin = {
         };
       },
     },
-
   },
 };
 
 export default antfu({
-  stylistic: {
-    indent: 2,
-    quotes: 'single',
-    semi: true,
-    jsx: true,
-    bracketSpacing: true,
-    arrowParens: 'always',
-    trailingComma: 'es5',
-  },
+  // 关闭 stylistic，格式化交给 Prettier 处理，避免 ESLint 和 Prettier 规则冲突
+  stylistic: false,
   formatters: {
-    css: true,
-    html: true,
+    css: 'prettier',
+    html: 'prettier',
     markdown: 'prettier',
   },
   react: true,
@@ -122,7 +114,7 @@ export default antfu({
     'custom/trim-classname-whitespace': 'error',
     // 强制所有 if/else/for/while 使用大括号
     'antfu/curly': 'off',
-    'curly': ['error', 'all'],
+    curly: ['error', 'all'],
   },
   overrides: {
     'src/router/index.tsx': {

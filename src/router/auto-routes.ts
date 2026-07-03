@@ -33,11 +33,11 @@ function deriveTitleFromFilePath(filePath: string): string {
   const name = match ? match[1] : filePath;
   const dirMatch = name.match(/(.+)\/index$/);
   const raw = dirMatch ? dirMatch[1] : name;
-  return raw.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  return raw.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function deriveTitleFromDirName(dirName: string): string {
-  return dirName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  return dirName.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function isExcluded(filePath: string, excludes: string[]): boolean {
@@ -136,8 +136,7 @@ export function getRouteMenuItems(): NavMainItem[] {
     const dirName = getFirstLevelDir(meta.filePath);
     if (dirName === null) {
       topLevelFiles.push(meta);
-    }
-    else {
+    } else {
       const existing = groupedByDir.get(dirName) || [];
       existing.push(meta);
       groupedByDir.set(dirName, existing);
