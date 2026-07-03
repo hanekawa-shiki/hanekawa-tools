@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import lunisolar from 'lunisolar';
 import { useCallback, useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -61,12 +62,13 @@ function getLunarDay(dateStr: string): string {
 function getLunarFullInfo(dateStr: string) {
   const d = lunisolar(dateStr);
   return {
-    fullText: d.format('lY年lMlD'),
+    fullText: d.format('lY年 lM(lL)lD lH時'),
     monthName: d.format('lM'),
     dayName: d.format('lD'),
     yearGanZhi: d.format('lY年'),
     yearShengXiao: d.format('lZ'),
     dayOfWeek: d.format('lW'),
+    character: d.format('cY cM cD cH'),
     isLeapMonth: d.lunar.leapMonth !== 0,
     solarTerm: d.solarTerm != null ? d.solarTerm.toString() : '',
   };
@@ -375,12 +377,10 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
         {lunar.isLeapMonth && <div className="text-xs text-muted-foreground">闰月</div>}
       </div>
 
-      {/* 天干地支 */}
+      {/* 八字 */}
       <div className="rounded-lg bg-muted/50 p-3">
-        <div className="mb-1 text-xs font-medium text-muted-foreground">天干地支</div>
-        <div className="text-sm">
-          {lunar.yearGanZhi} <span className="text-muted-foreground">{lunar.yearShengXiao}</span>
-        </div>
+        <div className="mb-1 text-xs font-medium text-muted-foreground">八字</div>
+        <div className="text-sm font-medium">{lunar.character}</div>
       </div>
 
       {/* 节气 */}
@@ -502,13 +502,9 @@ export default function CalendarPage() {
             </SelectContent>
           </Select>
 
-          <button
-            type="button"
-            onClick={handleGoToday}
-            className="rounded-md border bg-background px-3 py-1 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-          >
+          <Button variant="outline" onClick={handleGoToday}>
             回到今天
-          </button>
+          </Button>
 
           {/* 一周起始日选择 */}
           <Select value={String(weekStartState)} onValueChange={handleWeekStartChange}>
