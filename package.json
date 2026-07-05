@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "vite",
+    "build:all": "pnpm run build:cf & pnpm run build:gh",
     "build:cf": "tsc -b && vite build --mode cf",
     "build:gh": "tsc -b && vite build --mode gh",
     "lint": "eslint",

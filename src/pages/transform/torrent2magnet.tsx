@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { Check, Copy, Download, FileInput, FileText, Magnet } from 'lucide-react';
 import { remote as parseTorrentRemote, toMagnetURI } from 'parse-torrent';
 import { useCallback, useRef, useState } from 'react';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 
 const MAX_FILES = 100;
@@ -116,6 +117,7 @@ export default function Torrent2Magnet() {
 
   return (
     <div className="size-full">
+      <PageHeader />
       <div className="mt-4 flex items-center gap-3">
         <input
           ref={fileInputRef}

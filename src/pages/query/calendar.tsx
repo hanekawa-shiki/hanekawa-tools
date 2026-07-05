@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import lunisolar from 'lunisolar';
 import theGods from 'lunisolar/plugins/theGods';
 import { useCallback, useMemo, useState } from 'react';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -481,8 +482,10 @@ export default function CalendarPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 导航栏：年月控制 + 一周起始日设置（移动端 2×2 网格，桌面端横向排列，滚动时固定） */}
-      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-background px-4 pt-4 pb-2 backdrop-blur-sm lg:mx-0 lg:mt-0 lg:px-0 lg:py-4">
+      <PageHeader />
+
+      {/* 导航栏：年月控制 + 一周起始日设置（移动端 2×2 网格，桌面端横向排列） */}
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-wrap lg:items-center lg:justify-center">
           {/* 年份选择 */}
           <Select value={String(year)} onValueChange={handleYearChange}>
