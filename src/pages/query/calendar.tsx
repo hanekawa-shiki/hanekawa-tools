@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import lunisolar from 'lunisolar';
+import theGods from 'lunisolar/plugins/theGods';
 import { useCallback, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,7 +16,11 @@ import {
 import { getHolidayInfo } from '@/data/holidays';
 import { cn } from '@/lib/utils';
 
+lunisolar.extend(theGods);
+
 dayjs.extend(isoWeek);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // ==================== localStorage 工具 ====================
 
@@ -60,7 +67,9 @@ function getLunarDay(dateStr: string): string {
 }
 
 function getLunarFullInfo(dateStr: string) {
-  const d = lunisolar(dateStr);
+  const hms = dayjs().format('HH:mm:ss');
+  const d = lunisolar(`${dateStr} ${hms}`);
+
   return {
     fullText: d.format('lY年 lM(lL)lD lH時'),
     monthName: d.format('lM'),
@@ -71,6 +80,7 @@ function getLunarFullInfo(dateStr: string) {
     character: d.format('cY cM cD cH'),
     isLeapMonth: d.lunar.leapMonth !== 0,
     solarTerm: d.solarTerm != null ? d.solarTerm.toString() : '',
+    now: dayjs().tz('Asia/Shanghai').format('YYYY/MM/DD HH时'),
   };
 }
 
@@ -379,7 +389,7 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
 
       {/* 八字 */}
       <div className="rounded-lg bg-muted/50 p-3">
-        <div className="mb-1 text-xs font-medium text-muted-foreground">八字</div>
+        <div className="mb-1 text-xs font-medium text-muted-foreground">八字 - {lunar.now}</div>
         <div className="text-sm font-medium">{lunar.character}</div>
       </div>
 
