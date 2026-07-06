@@ -3,7 +3,7 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import lunisolar from 'lunisolar';
-import theGods from 'lunisolar/plugins/theGods';
+import zhCn from 'lunisolar/locale/zh-cn';
 import { useCallback, useMemo, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ import {
 import { getHolidayInfo } from '@/data/holidays';
 import { cn } from '@/lib/utils';
 
-lunisolar.extend(theGods);
+lunisolar.locale(zhCn);
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -47,11 +47,11 @@ function setWeekStart(val: 0 | 6) {
 // ==================== 工具函数 ====================
 
 function getDaysInMonth(year: number, month: number): number {
-  return new Date(year, month + 1, 0).getDate();
+  return dayjs(new Date(year, month)).daysInMonth();
 }
 
 function getDayOfWeek(year: number, month: number, day: number): number {
-  return new Date(year, month, day).getDay();
+  return dayjs(new Date(year, month, day)).day();
 }
 
 /** 获取当前日期是一年中的第几周（ISO 8601） */
@@ -72,16 +72,12 @@ function getLunarFullInfo(dateStr: string) {
   const d = lunisolar(`${dateStr} ${hms}`);
 
   return {
-    fullText: d.format('lY年 lM(lL)lD lH時'),
+    fullText: d.format('lM(lL)lD lH时'),
+    sbFullText: d.format('cY年【cZ年】 cM月 cD日'),
     monthName: d.format('lM'),
     dayName: d.format('lD'),
-    yearGanZhi: d.format('lY年'),
-    yearShengXiao: d.format('lZ'),
-    dayOfWeek: d.format('lW'),
-    character: d.format('cY cM cD cH'),
-    isLeapMonth: d.lunar.leapMonth !== 0,
+    dayOfWeek: d.format('dddd'),
     solarTerm: d.solarTerm != null ? d.solarTerm.toString() : '',
-    now: dayjs().tz('Asia/Shanghai').format('YYYY/MM/DD HH时'),
   };
 }
 
@@ -113,6 +109,7 @@ interface CalendarCell {
   lunar: string;
   solarTerm: string;
   holidayName: string;
+  showHolidayName: boolean;
   isHoliday: boolean;
   isWeekend: boolean;
   isWorkday: boolean;
@@ -162,11 +159,24 @@ function SingleMonthGrid({
       const isWorkday = holidayInfo?.isWorkday === true;
       const isHoliday = holidayInfo !== undefined && !isWorkday;
 
+      // 判断是否是连续法定假日的第一天（前一个日期没有相同的假日名）
+      const showHolidayName =
+        holidayInfo !== undefined &&
+        !isWorkday &&
+        (() => {
+          if (d <= 1) {
+            return true;
+          }
+          const prevHoliday = getHolidayInfo(month, d - 1, year);
+          return prevHoliday?.name !== holidayInfo.name;
+        })();
+
       result.push({
         day: d,
         lunar,
         solarTerm,
         holidayName: holidayInfo?.name ?? '',
+        showHolidayName,
         isHoliday,
         isWeekend,
         isWorkday,
@@ -294,7 +304,7 @@ function SingleMonthGrid({
               >
                 {cell.day}
               </span>
-              {cell.holidayName !== '' && !cell.isWorkday ? (
+              {cell.showHolidayName ? (
                 <span
                   className={cn(
                     'text-[10px] leading-tight',
@@ -370,6 +380,13 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
         </div>
       </div>
 
+      {/* 农历信息 */}
+      <div className="rounded-lg bg-muted/50 p-3">
+        <div className="mb-1 text-xs font-medium text-muted-foreground">农历</div>
+        <div className="text-sm font-medium">{lunar.fullText}</div>
+        <div className="text-sm font-medium">{lunar.sbFullText}</div>
+      </div>
+
       {/* 第几周 */}
       <div className="rounded-lg bg-muted/50 p-3">
         <div className="mb-1 text-xs font-medium text-muted-foreground">周数</div>
@@ -381,34 +398,21 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
         </div>
       </div>
 
-      {/* 农历信息 */}
-      <div className="rounded-lg bg-muted/50 p-3">
-        <div className="mb-1 text-xs font-medium text-muted-foreground">农历</div>
-        <div className="text-sm font-medium">{lunar.fullText}</div>
-        {lunar.isLeapMonth && <div className="text-xs text-muted-foreground">闰月</div>}
-      </div>
-
-      {/* 八字 */}
-      <div className="rounded-lg bg-muted/50 p-3">
-        <div className="mb-1 text-xs font-medium text-muted-foreground">八字 - {lunar.now}</div>
-        <div className="text-sm font-medium">{lunar.character}</div>
-      </div>
+      {/* 法定节假日 */}
+      {holidayInfo !== undefined && holidayInfo.isWorkday !== true && (
+        <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950">
+          <div className="mb-1 text-xs font-medium text-red-400 dark:text-red-400">节假日</div>
+          <div className="text-sm font-medium text-red-600 dark:text-red-400">
+            {holidayInfo.name}
+          </div>
+        </div>
+      )}
 
       {/* 节气 */}
       {solarTerm !== '' && (
         <div className="rounded-lg bg-green-50 p-3 dark:bg-green-950">
-          <div className="mb-1 text-xs font-medium text-green-700 dark:text-green-400">节气</div>
+          <div className="mb-1 text-xs font-medium text-green-600 dark:text-green-400">节气</div>
           <div className="text-sm font-medium text-green-700 dark:text-green-400">{solarTerm}</div>
-        </div>
-      )}
-
-      {/* 法定节假日 */}
-      {holidayInfo !== undefined && holidayInfo.isWorkday !== true && (
-        <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950">
-          <div className="mb-1 text-xs font-medium text-red-600 dark:text-red-400">节假日</div>
-          <div className="text-sm font-medium text-red-600 dark:text-red-400">
-            {holidayInfo.name}
-          </div>
         </div>
       )}
 
