@@ -22,15 +22,13 @@ jobs:
       - name: Set Node Version
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: pnpm
 
       - name: Install Dependencies
         run: pnpm install
 
       - name: Building for GH
-        env:
-          DEPLOY_TARGET: gh-pages
         run: pnpm run build:gh
 
       - name: Deploy
@@ -38,3 +36,5 @@ jobs:
         with:
           branch: gh-pages
           folder: dist-gh
+          clean: true
+          force: true
