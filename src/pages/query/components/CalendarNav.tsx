@@ -13,9 +13,9 @@ interface CalendarNavProps {
   month: number;
   weekStart: 0 | 6;
   currentYear: number;
-  onYearChange: (val: string) => void;
-  onMonthChange: (val: string) => void;
-  onWeekStartChange: (val: string) => void;
+  onYearChange: (val: string | null) => void;
+  onMonthChange: (val: string | null) => void;
+  onWeekStartChange: (val: string | null) => void;
   onGoToday: () => void;
 }
 

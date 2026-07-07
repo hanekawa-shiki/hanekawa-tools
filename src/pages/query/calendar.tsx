@@ -51,7 +51,10 @@ export default function CalendarPage() {
   );
 
   const handleYearChange = useCallback(
-    (val: string) => {
+    (val: string | null) => {
+      if (val == null) {
+        return;
+      }
       const newYear = Number(val);
       setYear(newYear);
       adjustSelectedDate(newYear, month);
@@ -60,7 +63,10 @@ export default function CalendarPage() {
   );
 
   const handleMonthChange = useCallback(
-    (val: string) => {
+    (val: string | null) => {
+      if (val == null) {
+        return;
+      }
       const newMonth = Number(val);
       setMonth(newMonth);
       adjustSelectedDate(year, newMonth);
@@ -68,7 +74,10 @@ export default function CalendarPage() {
     [year, adjustSelectedDate]
   );
 
-  const handleWeekStartChange = useCallback((val: string) => {
+  const handleWeekStartChange = useCallback((val: string | null) => {
+    if (val == null) {
+      return;
+    }
     const v = Number(val) as 0 | 6;
     setWeekStartState(v);
     setWeekStart(v);
