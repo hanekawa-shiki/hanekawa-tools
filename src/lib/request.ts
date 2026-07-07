@@ -9,7 +9,6 @@ const request = axios.create({
   },
 });
 
-// 响应拦截器：统一错误处理
 request.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {

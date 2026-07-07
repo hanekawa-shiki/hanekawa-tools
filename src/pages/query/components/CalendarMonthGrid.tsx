@@ -1,4 +1,3 @@
-import type { CalendarCell } from '../calendar-utils';
 import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import {
@@ -29,7 +28,6 @@ export function CalendarMonthGrid({
   const startDayOfWeek = getDayOfWeek(year, month, 1);
   const weekdayNames = getWeekdayNames(weekStart);
 
-  // 调整起始日偏移
   const adjustedStart = weekStart === 6 ? (startDayOfWeek + 6) % 7 : startDayOfWeek;
 
   const cells = useMemo<CalendarCell[]>(

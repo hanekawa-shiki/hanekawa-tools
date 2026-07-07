@@ -1,9 +1,6 @@
 import config from './config';
 import { resolveIcon } from './icon-map';
 
-/**
- * 将文件路径转换为路由路径
- */
 function filePathToRoutePath(filePath: string): string {
   let relative = filePath.replace(/^.*\/pages\//, '').replace(/\.(?:tsx|ts|jsx|js)$/, '');
 
@@ -25,9 +22,6 @@ function filePathToRoutePath(filePath: string): string {
   return `/${relative}`;
 }
 
-/**
- * 从文件路径中提取并格式化标题
- */
 function deriveTitleFromFilePath(filePath: string): string {
   const match = filePath.match(/\/pages\/(.+)\.[^.]+$/);
   const name = match ? match[1] : filePath;
@@ -71,9 +65,6 @@ function getFirstLevelDir(filePath: string): string | null {
   return segments[0];
 }
 
-/**
- * 根据路由路径从 config.pageMeta 查找页面元数据
- */
 function getPageMetaByPath(routePath: string): PageMetaConfig | undefined {
   return config.pageMeta?.[routePath];
 }
@@ -145,7 +136,6 @@ export function getRouteMenuItems(): NavMainItem[] {
 
   const items: NavMainItem[] = [];
 
-  // 顶级页面（不在任何目录下）
   for (const meta of topLevelFiles) {
     if (meta.pageMeta?.hidden) {
       continue;
@@ -159,7 +149,6 @@ export function getRouteMenuItems(): NavMainItem[] {
     });
   }
 
-  // 目录分组页面
   for (const [dirName, dirMetas] of groupedByDir) {
     const dirConfig = config.dirMeta?.[dirName];
     if (dirConfig?.hidden) {

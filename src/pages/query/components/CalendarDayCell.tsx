@@ -1,4 +1,3 @@
-import type { CalendarCell } from '../calendar-utils';
 import { cn } from '@/lib/utils';
 
 interface CalendarDayCellProps {
@@ -9,7 +8,6 @@ interface CalendarDayCellProps {
 }
 
 export function CalendarDayCell({ cell, year, month, onSelectDate }: CalendarDayCellProps) {
-  // 标签文字和样式
   let tagText = '';
   let tagClass = '';
 
@@ -24,7 +22,6 @@ export function CalendarDayCell({ cell, year, month, onSelectDate }: CalendarDay
     tagClass = 'bg-red-50 text-red-400 dark:bg-red-950 dark:text-red-400';
   }
 
-  // 格子背景色
   let cellBg = '';
   if (!cell.isSelected) {
     if (cell.isHoliday) {
@@ -74,7 +71,6 @@ export function CalendarDayCell({ cell, year, month, onSelectDate }: CalendarDay
         cell.isSelected && 'text-primary-foreground'
       )}
     >
-      {/* 左上角：休/班标签 */}
       {tagText !== '' && (
         <span
           className={cn(
@@ -87,7 +83,6 @@ export function CalendarDayCell({ cell, year, month, onSelectDate }: CalendarDay
         </span>
       )}
 
-      {/* 日期数字 */}
       <span
         className={cn(
           'mt-1 text-sm',
@@ -103,7 +98,6 @@ export function CalendarDayCell({ cell, year, month, onSelectDate }: CalendarDay
         {cell.day}
       </span>
 
-      {/* 底部文字：假日名 > 节气 > 农历 */}
       {cell.showHolidayName ? (
         <span
           className={cn(

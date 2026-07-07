@@ -27,14 +27,12 @@ export default function CalendarPage() {
   const [weekStartState, setWeekStartState] = useState<0 | 6>(getWeekStart);
   const [holidaysLoaded, setHolidaysLoaded] = useState<number>(0);
 
-  // 获取节假日数据（组件挂载和年份切换时）
   useEffect(() => {
     void fetchHolidays(year).then(() => {
       setHolidaysLoaded((prev) => prev + 1);
     });
   }, [year]);
 
-  /** 切换年/月后，保持选中日期的「日」不变；若目标月不存在该日则取月末 */
   const adjustSelectedDate = useCallback(
     (newYear: number, newMonth: number) => {
       if (selectedDate === null) {
@@ -93,7 +91,6 @@ export default function CalendarPage() {
     <div className="flex flex-col gap-4">
       <PageHeader />
 
-      {/* 导航栏 */}
       <CalendarNav
         year={year}
         month={month}
@@ -105,10 +102,8 @@ export default function CalendarPage() {
         onGoToday={handleGoToday}
       />
 
-      {/* 图例 */}
       <CalendarLegend />
 
-      {/* 双栏布局 */}
       <div className="flex flex-col gap-4 lg:flex-row">
         <div className="flex-1 rounded-lg border bg-card p-4">
           <CalendarMonthGrid

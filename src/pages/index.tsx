@@ -19,11 +19,9 @@ function getAllTools(): ToolItem[] {
   }
 
   for (const [path, meta] of Object.entries(pageMeta)) {
-    // 跳过首页自身
     if (path === '/') {
       continue;
     }
-    // 跳过隐藏的页面
     if (meta.hidden) {
       continue;
     }

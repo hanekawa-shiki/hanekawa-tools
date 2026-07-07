@@ -33,14 +33,12 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
   const { isMobile, setOpenMobile } = useSidebar();
   const isParent = item.items != null && item.items.length > 0;
 
-  // 父菜单项不因子项激活而高亮
   const isActive = !isParent && location.pathname === item.url;
 
   const toggleCollapse = () => {
     triggerRef.current?.click();
   };
 
-  // 移动端点击导航后自动隐藏侧边栏
   const closeMobileSidebar = () => {
     if (isMobile === true) {
       setOpenMobile(false);
@@ -98,12 +96,6 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
   );
 }
 
-/**
- * 菜单按钮：
- * - 无子菜单 → NavLink 正常跳转
- * - 有子菜单 + 无 url → 按钮展开/折叠，不跳转
- * - 有子菜单 + 有 url → NavLink 跳转
- */
 function NavMenuButton({
   item,
   isParent,

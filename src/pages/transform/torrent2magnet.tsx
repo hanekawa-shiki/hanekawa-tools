@@ -17,11 +17,6 @@ import { Button } from '@/components/ui/button';
 
 const MAX_FILES = 100;
 
-/**
- * 将 .torrent 文件解析为已解析的 torrent 实例。
- * parse-torrent 实际上是异步的，但 @types/parse-torrent
- * 将默认导出类型定义为同步，因此我们改用 remote()。
- */
 async function parseTorrentFile(file: File): Promise<parseTorrent.Instance> {
   return new Promise((resolve, reject) => {
     parseTorrentRemote(file, (err, torrent) => {
@@ -113,7 +108,6 @@ export default function Torrent2Magnet() {
         }
       }
 
-      // 重置文件输入框，以便可以再次选择同一文件
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -174,7 +168,6 @@ export default function Torrent2Magnet() {
 
       {torrents.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Torrent 文件列表 */}
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <HugeiconsIcon icon={File01Icon} className="size-4" />
@@ -196,7 +189,6 @@ export default function Torrent2Magnet() {
             </div>
           </div>
 
-          {/* Magnet 链接列表 */}
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <HugeiconsIcon icon={MagnetIcon} className="size-4" />

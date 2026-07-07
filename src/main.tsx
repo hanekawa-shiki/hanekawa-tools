@@ -4,8 +4,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router';
 import App from './App.tsx';
-
-// dayjs全局配置及插件
 import 'dayjs/locale/zh-cn';
 import './index.css';
 

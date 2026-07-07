@@ -2,8 +2,6 @@ import dayjs from 'dayjs';
 import lunisolar from 'lunisolar';
 import { getHolidayInfo } from '@/data/holidays';
 
-// ==================== localStorage 工具 ====================
-
 const WEEK_START_KEY = 'calendar_week_start';
 
 export function getWeekStart(): 0 | 6 {
@@ -23,8 +21,6 @@ export function setWeekStart(val: 0 | 6) {
   }
 }
 
-// ==================== 日期工具 ====================
-
 export function getDaysInMonth(year: number, month: number): number {
   return dayjs(new Date(year, month)).daysInMonth();
 }
@@ -33,12 +29,9 @@ export function getDayOfWeek(year: number, month: number, day: number): number {
   return dayjs(new Date(year, month, day)).day();
 }
 
-/** 获取当前日期是一年中的第几周（ISO 8601） */
 export function getWeekOfYear(dateStr: string): number {
   return dayjs(dateStr).isoWeek();
 }
-
-// ==================== 农历工具 ====================
 
 export function getLunarDay(dateStr: string): string {
   const d = lunisolar(dateStr);
@@ -62,29 +55,12 @@ export function getLunarFullInfo(dateStr: string) {
   };
 }
 
-// ==================== 星期名称 ====================
-
 export function getWeekdayNames(weekStart: 0 | 6): string[] {
   const names = ['日', '一', '二', '三', '四', '五', '六'];
   if (weekStart === 6) {
     return [...names.slice(1), names[0]];
   }
   return names;
-}
-
-// ==================== CalendarCell 类型与构建 ====================
-
-export interface CalendarCell {
-  day: number;
-  lunar: string;
-  solarTerm: string;
-  holidayName: string;
-  showHolidayName: boolean;
-  isHoliday: boolean;
-  isWeekend: boolean;
-  isWorkday: boolean;
-  isToday: boolean;
-  isSelected: boolean;
 }
 
 export function buildCalendarCells(
@@ -112,7 +88,6 @@ export function buildCalendarCells(
     const isWorkday = holidayInfo?.isWorkday === true;
     const isHoliday = holidayInfo !== undefined && !isWorkday;
 
-    // 判断是否是连续法定假日的第一天（前一个日期没有相同的假日名）
     const showHolidayName =
       holidayInfo !== undefined &&
       !isWorkday &&
@@ -140,8 +115,6 @@ export function buildCalendarCells(
 
   return result;
 }
-
-// ==================== 常量 ====================
 
 export const MONTH_NAMES = [
   '1月',
