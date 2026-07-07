@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { toast } from 'sonner';
 
+const baseURL: string = String(import.meta.env.VITE_API_BASE_URL ?? '/api');
+
 const request = axios.create({
-  // baseURL: '/api',
+  baseURL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
