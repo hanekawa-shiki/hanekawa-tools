@@ -1,4 +1,5 @@
-import { Home } from 'lucide-react';
+import { HomeIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { useNavigate } from 'react-router';
 import { AppSidebar } from '@/components/app-sidebar';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -18,7 +19,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
               <SidebarTrigger className="size-5" />
 
               <Button size="icon-sm" variant="ghost" onClick={() => void navigate('/home')}>
-                <Home className="size-5" />
+                <HugeiconsIcon icon={HomeIcon} size={20} />
               </Button>
             </div>
 

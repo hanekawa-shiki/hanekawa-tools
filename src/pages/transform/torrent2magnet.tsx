@@ -1,6 +1,14 @@
 import type parseTorrent from 'parse-torrent';
+import {
+  CheckIcon,
+  Copy01Icon,
+  Download01Icon,
+  File01Icon,
+  FileInputIcon,
+  MagnetIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import dayjs from 'dayjs';
-import { Check, Copy, Download, FileInput, FileText, Magnet } from 'lucide-react';
 import { remote as parseTorrentRemote, toMagnetURI } from 'parse-torrent';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -44,7 +52,11 @@ function CopyButton({ text }: { text: string }) {
       title="复制"
       className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground"
     >
-      {copied ? <Check className="size-4 text-green-600" /> : <Copy className="size-4" />}
+      {copied ? (
+        <HugeiconsIcon icon={CheckIcon} className="size-4 text-green-600" />
+      ) : (
+        <HugeiconsIcon icon={Copy01Icon} className="size-4" />
+      )}
     </div>
   );
 }
@@ -147,7 +159,7 @@ export default function Torrent2Magnet() {
           onChange={handleFileSelect}
         />
         <Button size="lg" onClick={() => fileInputRef.current?.click()} disabled={loading}>
-          <FileInput className="size-4" />
+          <HugeiconsIcon icon={FileInputIcon} className="size-4" />
           {loading ? '解析中...' : '选择Torrent文件'}
         </Button>
         {torrents.length > 0 && (
@@ -165,7 +177,7 @@ export default function Torrent2Magnet() {
           {/* Torrent 文件列表 */}
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
+              <HugeiconsIcon icon={File01Icon} className="size-4" />
               Torrent
             </div>
             <div className="space-y-2 rounded-lg border p-3">
@@ -174,7 +186,10 @@ export default function Torrent2Magnet() {
                   key={`file-${t.fileName}`}
                   className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
                 >
-                  <FileText className="size-4 shrink-0 text-muted-foreground" />
+                  <HugeiconsIcon
+                    icon={File01Icon}
+                    className="size-4 shrink-0 text-muted-foreground"
+                  />
                   <span className="truncate">{t.fileName}</span>
                 </div>
               ))}
@@ -184,7 +199,7 @@ export default function Torrent2Magnet() {
           {/* Magnet 链接列表 */}
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Magnet className="size-4" />
+              <HugeiconsIcon icon={MagnetIcon} className="size-4" />
               Magnet
             </div>
             <div className="space-y-2 rounded-lg border p-3">
@@ -201,11 +216,11 @@ export default function Torrent2Magnet() {
 
             <div className="mt-3 flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={handleExportToFile}>
-                <Download />
+                <HugeiconsIcon icon={Download01Icon} className="size-4" />
                 导出内容到文件
               </Button>
               <Button variant="outline" size="sm" onClick={handleCopyAll}>
-                <Copy />
+                <HugeiconsIcon icon={Copy01Icon} className="size-4" />
                 全部复制到剪切版
               </Button>
             </div>

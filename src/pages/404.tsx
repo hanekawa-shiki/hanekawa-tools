@@ -1,4 +1,5 @@
-import { HomeIcon, RotateCcwIcon } from 'lucide-react';
+import { ArrowTurnBackwardIcon, HomeIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 
@@ -30,7 +31,7 @@ export default function NotFoundPage() {
           }}
           className="gap-2"
         >
-          <HomeIcon className="size-4" />
+          <HugeiconsIcon icon={HomeIcon} className="size-4" />
           返回首页
         </Button>
         <Button
@@ -40,7 +41,7 @@ export default function NotFoundPage() {
           }}
           className="gap-2"
         >
-          <RotateCcwIcon className="size-4" />
+          <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="size-4" />
           返回上页
         </Button>
       </div>

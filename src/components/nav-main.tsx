@@ -1,4 +1,5 @@
-import { ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { useRef } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -11,8 +12,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  useSidebar,
 } from '@/components/ui/sidebar';
+import { useSidebar } from '@/components/ui/sidebar-context';
 
 export function NavMain({ items }: { items: NavMainItem[] }) {
   return (
@@ -30,7 +31,7 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
-  const isParent = !!(item.items && item.items.length > 0);
+  const isParent = item.items != null && item.items.length > 0;
 
   // 父菜单项不因子项激活而高亮
   const isActive = !isParent && location.pathname === item.url;
@@ -41,13 +42,13 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
 
   // 移动端点击导航后自动隐藏侧边栏
   const closeMobileSidebar = () => {
-    if (isMobile) {
+    if (isMobile === true) {
       setOpenMobile(false);
     }
   };
 
   return (
-    <Collapsible asChild defaultOpen={item.isActive || isActive}>
+    <Collapsible defaultOpen={item.isActive || isActive}>
       <SidebarMenuItem>
         <NavMenuButton
           item={item}
@@ -59,31 +60,33 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
 
         {isParent ? (
           <>
-            <CollapsibleTrigger ref={triggerRef} asChild>
-              <SidebarMenuAction className="data-[state=open]:rotate-90">
-                <ChevronRightIcon />
-                <span className="sr-only">Toggle</span>
-              </SidebarMenuAction>
+            <CollapsibleTrigger
+              ref={triggerRef}
+              render={<SidebarMenuAction className="data-[state=open]:rotate-90" />}
+            >
+              <HugeiconsIcon icon={ChevronRightIcon} size={16} />
+              <span className="sr-only">Toggle</span>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
                 {item.items!.map((subItem) => (
                   <SidebarMenuSubItem key={subItem.title}>
                     <SidebarMenuSubButton
-                      asChild
+                      render={(props) => (
+                        <NavLink
+                          {...props}
+                          to={subItem.url}
+                          className={({ isActive: active }) =>
+                            `${props.className ?? ''} ${active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}`
+                          }
+                        >
+                          {subItem.icon}
+                          <span>{subItem.title}</span>
+                        </NavLink>
+                      )}
                       isActive={location.pathname === subItem.url}
                       onClick={closeMobileSidebar}
-                    >
-                      <NavLink
-                        to={subItem.url}
-                        className={({ isActive: active }) =>
-                          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
-                        }
-                      >
-                        {subItem.icon}
-                        <span>{subItem.title}</span>
-                      </NavLink>
-                    </SidebarMenuSubButton>
+                    />
                   </SidebarMenuSubItem>
                 ))}
               </SidebarMenuSub>
@@ -116,7 +119,7 @@ function NavMenuButton({
 }) {
   if (isParent && !item.url) {
     return (
-      <SidebarMenuButton asChild={false} tooltip={item.title} onClick={onClick} isActive={isActive}>
+      <SidebarMenuButton tooltip={item.title} onClick={onClick} isActive={isActive}>
         {item.icon}
         {item.title}
       </SidebarMenuButton>
@@ -124,16 +127,22 @@ function NavMenuButton({
   }
 
   return (
-    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive} onClick={onNavigate}>
-      <NavLink
-        to={item.url}
-        className={({ isActive: active }) =>
-          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
-        }
-      >
-        {item.icon}
-        {item.title}
-      </NavLink>
-    </SidebarMenuButton>
+    <SidebarMenuButton
+      tooltip={item.title}
+      isActive={isActive}
+      onClick={onNavigate}
+      render={(props) => (
+        <NavLink
+          {...props}
+          to={item.url}
+          className={({ isActive: active }) =>
+            `${props.className ?? ''} ${active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}`
+          }
+        >
+          {item.icon}
+          {item.title}
+        </NavLink>
+      )}
+    />
   );
 }

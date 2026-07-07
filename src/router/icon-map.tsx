@@ -1,13 +1,22 @@
-import type { LucideIcon } from 'lucide-react';
-import { ArrowLeftRight, Binoculars, Calendar, Home, Magnet } from 'lucide-react';
+import {
+  ArrowLeftRightIcon,
+  BinocularsIcon,
+  CalendarIcon,
+  HomeIcon,
+  MagnetIcon,
+  WrenchIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 
-// 图标映射表：字符串名 → Lucide 组件类
-const iconMap: Record<string, LucideIcon> = {
-  ArrowLeftRight,
-  Binoculars,
-  Calendar,
-  Home,
-  Magnet,
+// 图标映射表：字符串名 → 图标对象
+// hugeicons 的图标类型无法直接用 TypeScript 类型表达，使用 unknown 存储
+const iconMap: Record<string, unknown> = {
+  ArrowLeftRightIcon,
+  BinocularsIcon,
+  CalendarIcon,
+  HomeIcon,
+  MagnetIcon,
+  WrenchIcon,
 };
 
 /**
@@ -22,9 +31,9 @@ export function resolveIcon(
   if (iconRef === undefined || iconRef === '') {
     return undefined;
   }
-  const Icon = iconMap[iconRef];
-  if (Icon === undefined) {
+  const iconObj = iconMap[iconRef];
+  if (iconObj === undefined) {
     return undefined;
   }
-  return <Icon className={className} />;
+  return <HugeiconsIcon icon={iconObj as typeof CalendarIcon} className={className} />;
 }
