@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { Check, Copy, Download, FileInput, FileText, Magnet } from 'lucide-react';
 import { remote as parseTorrentRemote, toMagnetURI } from 'parse-torrent';
 import { useCallback, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 
@@ -84,11 +85,21 @@ export default function Torrent2Magnet() {
             fileName: file.name,
             magnet: `[解析失败] ${file.name}`,
           });
+          toast.error(`解析失败：${file.name}`);
         }
       }
 
       setTorrents(results);
       setLoading(false);
+
+      if (results.length > 0) {
+        const failedCount = results.filter((t) => t.magnet.startsWith('[解析失败]')).length;
+        if (failedCount === 0) {
+          toast.success(`成功解析 ${results.length} 个文件`);
+        } else if (failedCount < results.length) {
+          toast.warning(`部分解析成功：${results.length - failedCount} 成功，${failedCount} 失败`);
+        }
+      }
 
       // 重置文件输入框，以便可以再次选择同一文件
       if (fileInputRef.current) {
@@ -108,11 +119,19 @@ export default function Torrent2Magnet() {
     a.download = `magnets_${dayjs().format('YYYYMMDDHHmmss')}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+    toast.success('已导出磁力链接文件');
   }, [torrents]);
 
   const handleCopyAll = useCallback(() => {
     const content = torrents.map((t) => t.magnet).join('\n');
-    void navigator.clipboard.writeText(content);
+    void navigator.clipboard
+      .writeText(content)
+      .then(() => {
+        toast.success('已复制全部磁力链接');
+      })
+      .catch(() => {
+        toast.error('复制失败');
+      });
   }, [torrents]);
 
   return (
