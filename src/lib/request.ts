@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 const request = axios.create({
-  baseURL: '/api',
+  // baseURL: '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
