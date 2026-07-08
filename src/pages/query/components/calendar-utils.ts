@@ -130,3 +130,7 @@ export const MONTH_NAMES = [
   '11月',
   '12月',
 ];
+export const WEEK_START_CONFIG = [
+  { label: '每周从周日开始', value: '0' },
+  { label: '每周从周一开始', value: '6' },
+];
