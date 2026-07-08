@@ -5,7 +5,7 @@ import {
   getDayOfWeek,
   getDaysInMonth,
   getWeekdayNames,
-} from '../calendar-utils';
+} from './calendar-utils';
 import { CalendarDayCell } from './CalendarDayCell';
 
 interface MonthGridProps {

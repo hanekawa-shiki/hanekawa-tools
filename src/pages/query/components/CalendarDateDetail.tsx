@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { getHolidayInfo } from '@/data/holidays';
 import { cn } from '@/lib/utils';
-import { getLunarFullInfo, getWeekOfYear } from '../calendar-utils';
+import { getLunarFullInfo, getWeekOfYear } from './calendar-utils';
 
 interface DateDetailPanelProps {
   selectedDate: string | null;

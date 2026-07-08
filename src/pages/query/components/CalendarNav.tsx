@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MONTH_NAMES } from '../calendar-utils';
+import { MONTH_NAMES } from './calendar-utils';
 
 interface CalendarNavProps {
   year: number;
