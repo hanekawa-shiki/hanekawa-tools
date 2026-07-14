@@ -2,6 +2,7 @@ import type parseTorrent from 'parse-torrent';
 import {
   CheckIcon,
   Copy01Icon,
+  Delete01Icon,
   Download01Icon,
   File01Icon,
   FileInputIcon,
@@ -116,6 +117,15 @@ export default function Torrent2Magnet() {
     void processFiles();
   }, []);
 
+  const handleRemoveItem = useCallback((index: number) => {
+    setTorrents((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleClearAll = useCallback(() => {
+    setTorrents([]);
+    toast.info('已清除全部 Torrent');
+  }, []);
+
   const handleExportToFile = useCallback(() => {
     const content = torrents.map((t) => t.magnet).join('\n');
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -174,7 +184,7 @@ export default function Torrent2Magnet() {
               Torrent
             </div>
             <div className="space-y-2 rounded-lg border p-3">
-              {torrents.map((t) => (
+              {torrents.map((t, index) => (
                 <div
                   key={`file-${t.fileName}`}
                   className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
@@ -183,9 +193,22 @@ export default function Torrent2Magnet() {
                     icon={File01Icon}
                     className="size-4 shrink-0 text-muted-foreground"
                   />
-                  <span className="truncate">{t.fileName}</span>
+                  <span className="min-w-0 flex-1 truncate">{t.fileName}</span>
+                  <div
+                    onClick={() => handleRemoveItem(index)}
+                    title="删除"
+                    className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-muted-foreground hover:text-destructive"
+                  >
+                    <HugeiconsIcon icon={Delete01Icon} className="size-4" />
+                  </div>
                 </div>
               ))}
+            </div>
+            <div className="mt-2">
+              <Button variant="outline" size="sm" onClick={handleClearAll}>
+                <HugeiconsIcon icon={Delete01Icon} className="size-4" />
+                清除全部
+              </Button>
             </div>
           </div>
 
