@@ -1,7 +1,7 @@
 import request from '@/lib/request';
 
-export function createApi<TResponse = unknown>(config: ApiConfig) {
-  return async (options?: RequestOptions): Promise<TResponse> => {
+export function createApi<TResponse = unknown>(config: ApiRequestConfig) {
+  return async (options?: ApiRequestOptions): Promise<TResponse> => {
     return request
       .request<TResponse>({
         method: config.method,

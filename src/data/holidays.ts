@@ -1,10 +1,10 @@
-import { fetchHolidaysApi } from '@/api';
+import { fetchHolidayApi } from '@/api';
 
 const cache = new Map<number, Holiday[]>();
 
 const pending = new Map<number, Promise<Holiday[]>>();
 
-function transformDays(days: ApiHolidayDay[]): Holiday[] {
+function transformDays(days: HolidayData[]): Holiday[] {
   return days.map((d) => ({
     name: d.name,
     date: d.date.slice(5), // YYYY-MM-DD → MM-DD
@@ -23,7 +23,7 @@ export async function fetchHolidays(year: number): Promise<Holiday[]> {
     return existing;
   }
 
-  const promise = fetchHolidaysApi({ data: { year } })
+  const promise = fetchHolidayApi({ data: { year } })
     .then((res) => {
       const holidays = transformDays(res.days);
       cache.set(year, holidays);

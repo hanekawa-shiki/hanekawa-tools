@@ -1,28 +1,53 @@
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
-interface ApiConfig {
+interface ApiRequestConfig {
   method: HttpMethod;
   url: string;
   headers?: Record<string, string>;
 }
 
-interface RequestOptions {
+interface ApiRequestOptions {
   data?: unknown;
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
 }
 
-interface ApiHolidayDay {
+interface HolidayData {
   name: string;
   date: string;
   isOffDay: boolean;
 }
 
-interface ApiResponse {
+interface HolidayApiResponse {
   year: number;
-  days: ApiHolidayDay[];
+  days: HolidayData[];
 }
 
-interface FetchHolidaysParams {
+interface HolidayFetchParams {
   year: number;
+}
+
+interface OilPriceCityData {
+  dim_id: string;
+  dim_date: string;
+  city_name: string;
+  first_letter: string;
+  v0: number;
+  v92: number;
+  v95: number;
+  v89: number;
+  zde0: number;
+  zde92: number;
+  zde95: number;
+  zde89: number;
+  qe0: number;
+  qe92: number;
+  qe95: number;
+  qe89: number;
+}
+
+interface OilPriceApiResponse {
+  data: OilPriceCityData[];
+  total: number;
+  date: string;
 }

@@ -27,6 +27,11 @@ const config: RouterConfig = {
       icon: 'CalendarIcon',
       description: '提供公历、农历日期查询。',
     },
+    '/query/oil-prices': {
+      title: '油价',
+      icon: 'FuelStationIcon',
+      description: '查询全国各地最新汽油、柴油价格。',
+    },
     '/transform/torrent2magnet': {
       title: '种子转磁力链',
       icon: 'MagnetIcon',
