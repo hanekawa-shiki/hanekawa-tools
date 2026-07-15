@@ -1,6 +1,6 @@
 # 项目交接文档
 
-> 最后更新：2026-07-14
+> 最后更新：2026-07-15
 > 最新 commit：`8d0a2498` (feat: torrent delete + toast colors)
 > 仓库地址：git@github.com:hanekawa-shiki/hanekawa-tools.git
 
@@ -42,7 +42,7 @@ hanekawa-tools/
 ├── src/
 │   ├── api/                       # API 接口层
 │   │   ├── request.ts             # createApi 泛型封装（method/url → 返回函数）
-│   │   └── index.ts               # 接口列表（fetchHolidaysApi）
+│   │   └── index.ts               # 接口列表（fetchHolidayApi、fetchOilPriceApi）
 │   ├── assest/                    # 静态资源
 │   │   └── avatar.jpeg            # 侧边栏头像图片
 │   ├── components/
@@ -65,6 +65,7 @@ hanekawa-tools/
 │   │       ├── sidebar-context.ts # 侧边栏 Context
 │   │       ├── skeleton.tsx       # Skeleton 骨架屏
 │   │       ├── sonner.tsx         # Toast 通知（适配 useTheme + 按类型着色图标）
+│   │       ├── table.tsx          # Table 表格组件
 │   │       └── tooltip.tsx        # Tooltip 提示
 │   ├── data/
 │   │   └── holidays.ts            # 法定节假日（从 worker API 获取 + 内存缓存）
@@ -80,6 +81,7 @@ hanekawa-tools/
 │   │   ├── index.tsx              # 首页（工具卡片列表，读取 config.pageMeta）
 │   │   ├── query/
 │   │   │   ├── calendar.tsx       # 日历主页面（~100行，组合子组件）
+│   │   │   ├── oil-prices.tsx     # 油价页面（全国各地油价查询，PC 双列/移动单列）
 │   │   │   └── components/        # 日历子组件（被 excludes 排除，不生成路由菜单）
 │   │   │       ├── calendar-utils.ts      # 工具函数 + CalendarCell 类型 + 常量
 │   │   │       ├── CalendarDateDetail.tsx  # 右侧日期详情面板
@@ -97,7 +99,7 @@ hanekawa-tools/
 │   │   └── not-found.tsx          # 404 路由组件
 │   └── types/                     # 全局类型声明（.d.ts，无需 import）
 │       ├── globals.d.ts           # 主入口（引用其他 .d.ts）
-│       ├── api.d.ts               # API 相关类型（ApiResponse 等）
+│       ├── api.d.ts               # API 相关类型（ApiRequestConfig、HolidayApiResponse、OilPriceApiResponse 等）
 │       ├── holidays.d.ts          # 节假日类型（Holiday 等）
 │       ├── router.d.ts            # 路由类型（RouterConfig/AutoRouteMeta 等）
 │       ├── sidebar.d.ts           # 侧边栏类型（NavMainItem 等）
@@ -129,9 +131,9 @@ src/lib/request.ts（axios 实例，baseURL 从 import.meta.env.VITE_API_BASE_UR
     ↓
 src/api/request.ts（createApi 泛型封装：method + url → 返回请求函数）
     ↓
-src/api/index.ts（具体接口定义，如 fetchHolidaysApi）
+src/api/index.ts（具体接口定义，如 fetchHolidayApi、fetchOilPriceApi）
     ↓
-src/data/holidays.ts（业务逻辑：缓存 + 数据转换 + getHolidayInfo）
+src/data/holidays.ts（节假日业务逻辑：缓存 + 数据转换 + getHolidayInfo）
 ```
 
 ### 多环境构建
@@ -184,6 +186,7 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 | 主题切换        | ✅ 完成 | `src/components/mode-toggle.tsx`, `theme-provider.tsx`            |
 | 日历万年历      | ✅ 完成 | `src/pages/query/calendar.tsx` + 5个子组件（Calendar* 前缀）      |
 | 日历节假日接口  | ✅ 完成 | `src/data/holidays.ts`（从 worker API 获取 + 内存缓存）           |
+| 油价查询        | ✅ 完成 | `src/pages/query/oil-prices.tsx`（全国油价，PC 双列/移动单列）    |
 | 种子转磁力链    | ✅ 完成 | `src/pages/transform/torrent2magnet.tsx`（含逐条删除 + 清除全部） |
 | 404 页面        | ✅ 完成 | `src/pages/404.tsx`                                               |
 | API 请求封装    | ✅ 完成 | `src/lib/request.ts`, `src/api/request.ts`, `src/api/index.ts`    |
@@ -227,7 +230,7 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 > - 多环境构建：dev 走 vite proxy，CF 走相对路径 `/api`，GH 走 worker 完整 URL
 > - ESLint 配置在 `eslint.config.mjs`（@antfu/eslint-config），格式化用 Prettier
 >
-> 项目当前功能包含：自动路由系统、侧边栏导航、头像区域、主题切换、日历万年历（含节假日 API 接口）、种子转磁力链（含逐条删除 + 清除全部）、404 页面、按类型着色的全局 Toast 通知。
+> 项目当前功能包含：自动路由系统、侧边栏导航、头像区域、主题切换、日历万年历（含节假日 API 接口）、油价查询（全国各地最新油价）、种子转磁力链（含逐条删除 + 清除全部）、404 页面、按类型着色的全局 Toast 通知。
 >
 > 请先阅读 `HANDOVER.md` 了解完整项目结构，然后告诉我你想做的下一步。
 
