@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import {
   buildCalendarCells,
@@ -23,6 +22,7 @@ export function CalendarMonthGrid({
   selectedDate,
   onSelectDate,
   weekStart,
+  holidaysLoaded: _holidaysLoaded,
 }: MonthGridProps) {
   const daysInMonth = getDaysInMonth(year, month);
   const startDayOfWeek = getDayOfWeek(year, month, 1);
@@ -30,10 +30,7 @@ export function CalendarMonthGrid({
 
   const adjustedStart = weekStart === 6 ? (startDayOfWeek + 6) % 7 : startDayOfWeek;
 
-  const cells = useMemo<CalendarCell[]>(
-    () => buildCalendarCells(year, month, daysInMonth, selectedDate),
-    [year, month, daysInMonth, selectedDate]
-  );
+  const cells = buildCalendarCells(year, month, daysInMonth, selectedDate);
 
   const totalCells = adjustedStart + daysInMonth;
 

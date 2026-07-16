@@ -5,9 +5,13 @@ import { getLunarFullInfo, getWeekOfYear } from './calendar-utils';
 
 interface DateDetailPanelProps {
   selectedDate: string | null;
+  holidaysLoaded?: number;
 }
 
-export function CalendarDateDetail({ selectedDate }: DateDetailPanelProps) {
+export function CalendarDateDetail({
+  selectedDate,
+  holidaysLoaded: _holidaysLoaded,
+}: DateDetailPanelProps) {
   if (selectedDate === null) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">

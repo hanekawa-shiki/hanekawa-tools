@@ -48,28 +48,15 @@ export default function CalendarPage() {
     [selectedDate]
   );
 
-  const handleYearChange = useCallback(
-    (val: string | null) => {
-      if (val == null) {
-        return;
-      }
-      const newYear = Number(val);
+  const handleMonthSelect = useCallback(
+    (date: Date) => {
+      const newYear = date.getFullYear();
+      const newMonth = date.getMonth();
       setYear(newYear);
-      adjustSelectedDate(newYear, month);
-    },
-    [month, adjustSelectedDate]
-  );
-
-  const handleMonthChange = useCallback(
-    (val: string | null) => {
-      if (val == null) {
-        return;
-      }
-      const newMonth = Number(val);
       setMonth(newMonth);
-      adjustSelectedDate(year, newMonth);
+      adjustSelectedDate(newYear, newMonth);
     },
-    [year, adjustSelectedDate]
+    [adjustSelectedDate]
   );
 
   const handleWeekStartChange = useCallback((val: string | null) => {
@@ -95,9 +82,7 @@ export default function CalendarPage() {
         year={year}
         month={month}
         weekStart={weekStartState}
-        currentYear={now.year()}
-        onYearChange={handleYearChange}
-        onMonthChange={handleMonthChange}
+        onMonthSelect={handleMonthSelect}
         onWeekStartChange={handleWeekStartChange}
         onGoToday={handleGoToday}
       />
@@ -116,7 +101,7 @@ export default function CalendarPage() {
           />
         </div>
         <div className="rounded-lg border bg-card lg:w-72 lg:shrink-0">
-          <CalendarDateDetail selectedDate={selectedDate} />
+          <CalendarDateDetail selectedDate={selectedDate} holidaysLoaded={holidaysLoaded} />
         </div>
       </div>
     </div>
