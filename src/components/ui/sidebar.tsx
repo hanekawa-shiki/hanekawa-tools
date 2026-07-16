@@ -243,7 +243,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
       }}
       {...props}
     >
-      <HugeiconsIcon icon={SidebarLeftIcon} strokeWidth={2} />
+      <HugeiconsIcon icon={SidebarLeftIcon} strokeWidth={2} className="size-6" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

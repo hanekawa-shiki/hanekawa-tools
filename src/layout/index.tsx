@@ -1,4 +1,4 @@
-import { HomeIcon } from '@hugeicons/core-free-icons';
+import { GithubIcon, HomeIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useNavigate } from 'react-router';
 import { AppSidebar } from '@/components/app-sidebar';
@@ -16,14 +16,21 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex w-full items-center justify-between gap-2 px-4">
             <div className="flex h-full items-center gap-2">
-              <SidebarTrigger className="size-5" />
-
+              <SidebarTrigger />
               <Button size="icon-sm" variant="ghost" onClick={() => void navigate('/home')}>
-                <HugeiconsIcon icon={HomeIcon} size={20} />
+                <HugeiconsIcon icon={HomeIcon} strokeWidth={2} className="size-6" />
               </Button>
             </div>
 
-            <div className="">
+            <div className="flex items-center gap-2">
+              <a
+                href="https://github.com/hanekawa-shiki/hanekawa-tools"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block transition-colors hover:text-gray-500"
+              >
+                <HugeiconsIcon icon={GithubIcon} strokeWidth={2} className="size-6" />
+              </a>
               <ModeToggle />
             </div>
           </div>

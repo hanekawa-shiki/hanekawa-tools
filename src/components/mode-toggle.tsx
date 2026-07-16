@@ -15,10 +15,12 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
-        {theme === 'light' && <HugeiconsIcon icon={SunIcon} size={19.2} />}
-        {theme === 'dark' && <HugeiconsIcon icon={MoonIcon} size={19.2} />}
-        {theme === 'system' && <HugeiconsIcon icon={RepeatIcon} size={19.2} />}
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
+        {theme === 'light' && <HugeiconsIcon icon={SunIcon} strokeWidth={2} className="size-6" />}
+        {theme === 'dark' && <HugeiconsIcon icon={MoonIcon} strokeWidth={2} className="size-6" />}
+        {theme === 'system' && (
+          <HugeiconsIcon icon={RepeatIcon} strokeWidth={2} className="size-6" />
+        )}
         <span className="sr-only">切换主题</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
