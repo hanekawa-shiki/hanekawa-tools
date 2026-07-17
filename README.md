@@ -3,7 +3,7 @@
 [![code style](https://antfu.me/badge-code-style.svg)](https://github.com/antfu/eslint-config)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> 个人整理的实用工具集合网站，提供日常开发中常用的转换、查询工具。
+> 我不是无所不知，只是刚好知道而已。
 
 ## ✨ 功能特性
 

@@ -27,7 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <span className="text-sm font-semibold">Hanekawa Tools</span>
             <span
               className="mt-0.5 text-xs text-muted-foreground"
-              title="我不是无所不知，只是刚好知道而已。"
+              title="何でもは知らないわよ。知ってることだけ"
             >
               我不是无所不知，只是刚好知道而已。
             </span>
