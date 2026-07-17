@@ -30,7 +30,7 @@ function OilPriceTable({ data }: { data: OilPriceCityData[] }) {
       </TableHeader>
       <TableBody>
         {data.map((item) => (
-          <TableRow key={item.dim_id}>
+          <TableRow key={item.dim_id} className={item.highlight ? 'bg-primary/10' : ''}>
             <TableCell className="font-medium">{item.city_name}</TableCell>
             <TableCell className="text-right">{formatPrice(item.v92)}</TableCell>
             <TableCell className="text-right">{formatPrice(item.v95)}</TableCell>
@@ -51,9 +51,15 @@ export default function OilPrices() {
     setLoading(true);
     try {
       const response = await fetchOilPriceApi();
-      const sorted = [...response.data].sort((a, b) =>
-        a.first_letter.localeCompare(b.first_letter, 'zh-CN')
-      );
+      const sorted = [...response.data].sort((a, b) => {
+        if (a.highlight && !b.highlight) {
+          return -1;
+        }
+        if (!a.highlight && b.highlight) {
+          return 1;
+        }
+        return a.first_letter.localeCompare(b.first_letter, 'zh-CN');
+      });
       setPrices(sorted);
       setUpdateDate(response.date);
     } finally {

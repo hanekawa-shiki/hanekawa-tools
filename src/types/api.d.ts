@@ -44,6 +44,7 @@ interface OilPriceCityData {
   qe92: number;
   qe95: number;
   qe89: number;
+  highlight?: boolean;
 }
 
 interface OilPriceApiResponse {

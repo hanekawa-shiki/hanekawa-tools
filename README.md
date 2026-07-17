@@ -120,7 +120,7 @@ export const newApi = createApi<ResponseType>({
 ## 🎨 设计规范
 
 - **颜色主题**：基于 shadcn/ui 的 olive 配色方案
-- **字体**：Inter Variable + Figtree Variable
+- **字体**：LXGW WenKai（CDN）+ Inter Variable + Figtree Variable
 - **深色模式**：通过 CSS 变量自动切换
 - **圆角**：4xl（`rounded-4xl`）
 - **动画**：使用 `tw-animate-css` 提供的过渡效果

@@ -1,7 +1,7 @@
 # 项目交接文档
 
-> 最后更新：2026-07-15
-> 最新 commit：`8d0a2498` (feat: torrent delete + toast colors)
+> 最后更新：2026-07-17
+> 最新 commit：`aee5e03d` (feat: oil price highlight + build optimizations)
 > 仓库地址：git@github.com:hanekawa-shiki/hanekawa-tools.git
 
 ---
@@ -63,6 +63,7 @@ hanekawa-tools/
 │   │       ├── sheet.tsx          # Sheet 抽屉组件
 │   │       ├── sidebar.tsx        # 侧边栏核心组件（useRender + render prop）
 │   │       ├── sidebar-context.ts # 侧边栏 Context
+│   │       ├── monthpicker.tsx     # MonthPicker 年月选择器（shadcn-ui-monthpicker）
 │   │       ├── skeleton.tsx       # Skeleton 骨架屏
 │   │       ├── sonner.tsx         # Toast 通知（适配 useTheme + 按类型着色图标）
 │   │       ├── table.tsx          # Table 表格组件
@@ -88,7 +89,7 @@ hanekawa-tools/
 │   │   │       ├── CalendarDayCell.tsx     # 单个日期格子
 │   │   │       ├── CalendarLegend.tsx      # 图例
 │   │   │       ├── CalendarMonthGrid.tsx   # 月历网格
-│   │   │       └── CalendarNav.tsx         # 导航栏（年/月选择）
+│   │   │       └── CalendarNav.tsx         # 导航栏（Popover + MonthPicker 年月选择 + 一周起始日）
 │   │   └── transform/
 │   │       └── torrent2magnet.tsx  # 种子转磁力链工具（支持逐条删除 + 清除全部）
 │   ├── router/
@@ -108,7 +109,7 @@ hanekawa-tools/
 │           ├── calendar.d.ts      # 日历页面类型
 │           └── torrent2magnet.d.ts# 种子转磁力链类型（TorrentInfo 等）
 ├── components.json                # shadcn 配置（base-maia 风格，hugeicons 图标库）
-├── vite.config.ts                 # Vite 配置（env/ 目录 + API proxy + https-proxy-agent）
+├── vite.config.ts                 # Vite 配置（env/ 目录 + API proxy + rolldownOptions + Brotli 压缩）
 └── vite-plugins/
     └── htmlBuildTime.ts           # 构建时间注入到 HTML
 ```
@@ -153,7 +154,7 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 - `CalendarMonthGrid.tsx`：月历网格（星期头 + 日期格子 grid）
 - `CalendarDateDetail.tsx`：右侧详情面板（公历、农历、天干地支、节气、节假日）
 - `CalendarLegend.tsx`：图例（休/班/节气样式说明）
-- `CalendarNav.tsx`：导航栏（年/月 Select 选择 + 一周起始日）
+- `CalendarNav.tsx`：导航栏（Popover + MonthPicker 年月选择 + 一周起始日）
 - `calendar.tsx`：主页面（状态管理 + useEffect 获取节假日 + 组合子组件）
 
 ### 图标系统
