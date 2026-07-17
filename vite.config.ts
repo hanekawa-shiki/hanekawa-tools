@@ -22,7 +22,14 @@ export default defineConfig(({ mode }) => {
         include: ['path'],
       }),
       htmlBuildTime(),
-      viteCompression({ algorithm: 'gzip' }),
+      ...(mode !== 'cf'
+        ? [
+            viteCompression({
+              algorithm: 'brotliCompress',
+              compressionOptions: { level: 11 },
+            }),
+          ]
+        : []),
     ],
     resolve: {
       alias: {
@@ -45,6 +52,7 @@ export default defineConfig(({ mode }) => {
     },
     base: env.VITE_BASE_PATH || '/',
     build: {
+      emptyOutDir: true,
       outDir: env.VITE_OUT_DIR || 'dist',
       reportCompressedSize: true,
     },
