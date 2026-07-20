@@ -1,3 +1,5 @@
+import { DragDropProvider, useDragDropMonitor } from '@dnd-kit/react';
+import { useSortable } from '@dnd-kit/react/sortable';
 import {
   Delete01Icon,
   Download01Icon,
@@ -6,7 +8,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { PDFDocument } from 'pdf-lib';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -84,20 +86,127 @@ function getLayoutSlots(perPage: 2 | 4) {
   ];
 }
 
+/**
+ * 单个发票卡片组件（可排序拖拽）
+ */
+function SortableInvoiceCard({
+  inv,
+  globalIdx,
+  onRemove,
+}: {
+  inv: InvoicePage;
+  globalIdx: number;
+  onRemove: (idx: number) => void;
+}) {
+  const { ref: sortableRef, isDragging } = useSortable({
+    id: inv.id,
+    index: globalIdx,
+  });
+
+  return (
+    <div
+      ref={sortableRef}
+      className={`group relative flex cursor-grab flex-col items-center overflow-hidden rounded-lg border bg-muted/30 p-2 transition-all ${
+        isDragging ? 'scale-95 opacity-40' : ''
+      }`}
+    >
+      {/* 位置编号 */}
+      <div className="absolute top-1 left-1 z-10 rounded bg-primary/80 px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+        #{globalIdx + 1}
+      </div>
+      {/* 删除按钮 */}
+      <div
+        onClick={() => onRemove(globalIdx)}
+        title="删除"
+        className="absolute top-1 right-1 z-10 inline-flex size-5 cursor-pointer items-center justify-center rounded-sm bg-background/80 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
+      >
+        <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
+      </div>
+      {/* 预览 */}
+      {inv.previewDataUrl != null && inv.previewDataUrl !== '' && (
+        <iframe
+          src={inv.previewDataUrl}
+          className="pointer-events-none h-48 w-full flex-1 border-0"
+          title={inv.fileName}
+        />
+      )}
+      <span className="mt-1 w-full truncate text-center text-xs text-muted-foreground">
+        {inv.fileName}
+      </span>
+    </div>
+  );
+}
+
+/** 排序上下文：存储拖拽起始索引 */
+interface SortContext {
+  sourceIndex: number;
+}
+
+/**
+ * 监听拖拽事件，记录 sourceIndex 和执行排序
+ */
+function SortMonitor({
+  context,
+  setInvoices,
+}: {
+  context: React.MutableRefObject<SortContext>;
+  setInvoices: React.Dispatch<React.SetStateAction<InvoicePage[]>>;
+}) {
+  // 拖拽开始时记录 source 索引
+  const onDragStartRef = React.useRef(context);
+  onDragStartRef.current = context;
+
+  const onSetInvoicesRef = React.useRef(setInvoices);
+  onSetInvoicesRef.current = setInvoices;
+
+  useDragDropMonitor({
+    onDragStart(event) {
+      const src = (event.operation as unknown as Record<string, unknown>).source as
+        { index?: number } | null | undefined;
+      if (src != null && src.index != null) {
+        onDragStartRef.current.current.sourceIndex = src.index;
+      }
+    },
+    onDragEnd(event) {
+      const op = event.operation as unknown as Record<string, unknown>;
+      const source = op.source as { index?: number } | null | undefined;
+      const target = op.target as { index?: number } | null | undefined;
+      if (source == null || target == null) {
+        return;
+      }
+
+      const fromIdx = onDragStartRef.current.current.sourceIndex;
+      const toIdx = target.index ?? 0;
+
+      if (fromIdx === toIdx || Number.isNaN(fromIdx) || Number.isNaN(toIdx)) {
+        return;
+      }
+
+      onSetInvoicesRef.current((prev) => {
+        const next = [...prev];
+        const [moved] = next.splice(fromIdx, 1);
+        next.splice(toIdx, 0, moved);
+        return next;
+      });
+    },
+  });
+
+  return null;
+}
+
 export default function InvoiceMerge() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [invoices, setInvoices] = useState<InvoicePage[]>([]);
   const invoicesRef = useRef(invoices);
+  const [perPage, setPerPage] = useState<2 | 4>(4);
+  const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const sortContext = useRef<SortContext>({ sourceIndex: -1 });
 
   // 保持 ref 与 state 同步
   useEffect(() => {
     invoicesRef.current = invoices;
   }, [invoices]);
-  const [perPage, setPerPage] = useState<2 | 4>(4);
-  const [loading, setLoading] = useState(false);
-  const [exporting, setExporting] = useState(false);
-  const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [overIdx, setOverIdx] = useState<number | null>(null);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -170,40 +279,6 @@ export default function InvoiceMerge() {
     setInvoices([]);
     toast.info('已清除全部发票');
   }, [invoices]);
-
-  // --- 拖拽排序处理 ---
-  const handleDragStart = useCallback((idx: number) => {
-    setDragIdx(idx);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
-    e.preventDefault();
-    setOverIdx(idx);
-  }, []);
-
-  const handleDrop = useCallback(
-    (idx: number) => {
-      if (dragIdx === null || dragIdx === idx) {
-        setDragIdx(null);
-        setOverIdx(null);
-        return;
-      }
-      setInvoices((prev) => {
-        const next = [...prev];
-        const [moved] = next.splice(dragIdx, 1);
-        next.splice(idx, 0, moved);
-        return next;
-      });
-      setDragIdx(null);
-      setOverIdx(null);
-    },
-    [dragIdx]
-  );
-
-  const handleDragEnd = useCallback(() => {
-    setDragIdx(null);
-    setOverIdx(null);
-  }, []);
 
   // --- 导出合并 PDF ---
   const handleExport = useCallback(async () => {
@@ -347,74 +422,38 @@ export default function InvoiceMerge() {
       </div>
 
       {invoices.length > 0 && (
-        <div className="mt-6 space-y-4">
-          {Array.from({ length: totalPages }, (_, pageIdx) => {
-            const startIdx = pageIdx * perPage;
-            const pageItems = invoices.slice(startIdx, startIdx + perPage);
+        <DragDropProvider>
+          <SortMonitor context={sortContext} setInvoices={setInvoices} />
+          <div className="mt-6 space-y-4">
+            {Array.from({ length: totalPages }, (_, pageIdx) => {
+              const startIdx = pageIdx * perPage;
+              const pageItems = invoices.slice(startIdx, startIdx + perPage);
 
-            return (
-              <div key={`page-${pageIdx}`}>
-                <div className="mb-2 text-xs font-medium text-muted-foreground">
-                  第 {pageIdx + 1} 页（{pageItems.length}/{perPage}）
+              return (
+                <div key={`page-${pageIdx}`}>
+                  <div className="mb-2 text-xs font-medium text-muted-foreground">
+                    第 {pageIdx + 1} 页（{pageItems.length}/{perPage}）
+                  </div>
+                  <div
+                    className={`grid gap-3 ${perPage === 2 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}
+                  >
+                    {pageItems.map((inv, slotIdx) => {
+                      const globalIdx = startIdx + slotIdx;
+                      return (
+                        <SortableInvoiceCard
+                          key={inv.id}
+                          inv={inv}
+                          globalIdx={globalIdx}
+                          onRemove={handleRemoveItem}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-                <div
-                  className={`grid gap-3 ${perPage === 2 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}
-                >
-                  {pageItems.map((inv, slotIdx) => {
-                    const globalIdx = startIdx + slotIdx;
-                    return (
-                      <div
-                        key={inv.id}
-                        draggable
-                        onDragStart={() => {
-                          handleDragStart(globalIdx);
-                        }}
-                        onDragOver={(e: React.DragEvent) => {
-                          handleDragOver(e, globalIdx);
-                        }}
-                        onDrop={() => {
-                          handleDrop(globalIdx);
-                        }}
-                        onDragEnd={handleDragEnd}
-                        className={`group relative flex cursor-grab flex-col items-center overflow-hidden rounded-lg border bg-muted/30 p-2 transition-all active:cursor-grabbing ${
-                          dragIdx === globalIdx
-                            ? 'scale-95 opacity-40'
-                            : overIdx === globalIdx
-                              ? 'border-primary ring-2 ring-primary/30'
-                              : ''
-                        }`}
-                      >
-                        {/* 位置编号 */}
-                        <div className="absolute top-1 left-1 z-10 rounded bg-primary/80 px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
-                          #{globalIdx + 1}
-                        </div>
-                        {/* 删除按钮 */}
-                        <div
-                          onClick={() => handleRemoveItem(globalIdx)}
-                          title="删除"
-                          className="absolute top-1 right-1 z-10 inline-flex size-5 cursor-pointer items-center justify-center rounded-sm bg-background/80 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
-                        >
-                          <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
-                        </div>
-                        {/* 预览 */}
-                        {inv.previewDataUrl != null && inv.previewDataUrl !== '' && (
-                          <iframe
-                            src={inv.previewDataUrl}
-                            className="h-48 w-full flex-1 border-0"
-                            title={inv.fileName}
-                          />
-                        )}
-                        <span className="mt-1 w-full truncate text-center text-xs text-muted-foreground">
-                          {inv.fileName}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </DragDropProvider>
       )}
 
       {invoices.length === 0 && !loading && (
