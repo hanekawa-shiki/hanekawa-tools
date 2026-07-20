@@ -44,11 +44,11 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         '/api': {
-          target: 'https://toolset.hanekawa.top',
+          target: 'https://tools.hanekawa.top',
           changeOrigin: true,
           secure: true,
           headers: {
-            Origin: 'https://toolset.hanekawa.top',
+            Origin: 'https://tools.hanekawa.top',
           },
         },
       },
