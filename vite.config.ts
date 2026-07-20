@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { fontSwitch } from './vite-plugins/fontSwitch';
 import htmlBuildTime from './vite-plugins/htmlBuildTime';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,6 +23,7 @@ export default defineConfig(({ mode }) => {
         include: ['path'],
       }),
       htmlBuildTime(),
+      fontSwitch(mode),
       ...(mode !== 'cf'
         ? [
             viteCompression({
