@@ -1,0 +1,1 @@
+import{r as e}from"./jsx-runtime-D_MnEzuy.js";var t,n=e((()=>{t=globalThis||self}));export{n,t};
