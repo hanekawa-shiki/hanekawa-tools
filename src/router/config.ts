@@ -38,6 +38,11 @@ const config: RouterConfig = {
       description:
         '将 Torrent 种子文件快速转换为磁力链接，方便直接下载。支持批量转换及 Magnet 导出到文件',
     },
+    '/transform/invoice-merge': {
+      title: '发票合并',
+      icon: 'Layers01Icon',
+      description: '将多张发票 PDF 合并到 A4 页面上，支持 2 张或 4 张排列，拖拽排序后导出打印。',
+    },
   },
 
   dirMeta: {

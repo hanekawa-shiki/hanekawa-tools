@@ -4,6 +4,7 @@ import {
   CalendarIcon,
   FuelStationIcon,
   HomeIcon,
+  Layers01Icon,
   MagnetIcon,
   WrenchIcon,
 } from '@hugeicons/core-free-icons';
@@ -16,6 +17,7 @@ const iconMap: Record<string, unknown> = {
   CalendarIcon,
   FuelStationIcon,
   HomeIcon,
+  Layers01Icon,
   MagnetIcon,
   WrenchIcon,
 };
