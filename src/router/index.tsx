@@ -13,7 +13,11 @@ function buildRoutes(): RouteObject[] {
     const LazyComponent = lazy(meta.loader);
     return {
       path: meta.path,
-      element: <LazyComponent />,
+      element: (
+        <Suspense>
+          <LazyComponent />
+        </Suspense>
+      ),
     };
   });
 

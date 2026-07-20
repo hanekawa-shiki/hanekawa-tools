@@ -4,20 +4,6 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/figtree';
 
-@layer base {
-  html {
-    /* 默认大小 */
-    font-size: 16px;
-    @apply font-sans;
-  }
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -133,6 +119,12 @@
 }
 
 @layer base {
+  html {
+    /* 默认大小 */
+    font-size: 16px;
+    @apply font-sans;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -196,9 +188,5 @@
 
   .dark .scroll-safari-style {
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-  }
-
-  html {
-    @apply font-sans;
   }
 }

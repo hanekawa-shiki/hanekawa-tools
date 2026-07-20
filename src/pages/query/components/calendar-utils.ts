@@ -80,8 +80,7 @@ export function buildCalendarCells(
     const solarTerm = lunisolar(dateStr).solarTerm?.toString() ?? '';
     const holidayInfo = getHolidayInfo(month, d, year);
 
-    const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isSelected = selectedDate === dateKey;
+    const isSelected = selectedDate === dateStr;
 
     const dayOfWeek = getDayOfWeek(year, month, d);
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;

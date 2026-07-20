@@ -58,7 +58,7 @@ export default function HomePage() {
                   {tool.title}
                 </CardTitle>
                 {tool.description && (
-                  <CardDescription className="break-al line-clamp-2 h-10">
+                  <CardDescription className="line-clamp-2 h-10 break-all">
                     {tool.description}
                   </CardDescription>
                 )}

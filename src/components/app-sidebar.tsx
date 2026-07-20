@@ -1,6 +1,5 @@
-'use client';
-
 import type * as React from 'react';
+import { useMemo } from 'react';
 import avatarImg from '@/assest/avatar.jpeg';
 import { NavMain } from '@/components/nav-main';
 
@@ -9,7 +8,7 @@ import { Sidebar, SidebarContent, SidebarFooter } from '@/components/ui/sidebar'
 import { getRouteMenuItems } from '@/router/auto-routes';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const routeMenuItems = getRouteMenuItems();
+  const routeMenuItems = useMemo(() => getRouteMenuItems(), []);
 
   return (
     <Sidebar variant="inset" {...props}>

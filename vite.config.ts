@@ -122,6 +122,36 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       outDir: env.VITE_OUT_DIR || 'dist',
       reportCompressedSize: true,
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                return 'vendor-react';
+              }
+              if (id.includes('pdf-lib')) {
+                return 'vendor-pdf';
+              }
+              if (id.includes('@dnd-kit')) {
+                return 'vendor-dnd';
+              }
+              if (id.includes('@hugeicons')) {
+                return 'vendor-icons';
+              }
+              if (id.includes('dayjs') || id.includes('lunisolar') || id.includes('date-fns')) {
+                return 'vendor-date';
+              }
+              if (id.includes('parse-torrent')) {
+                return 'vendor-torrent';
+              }
+              if (id.includes('tailwindcss') || id.includes('tw-animate')) {
+                return 'vendor-css';
+              }
+            }
+            return undefined;
+          },
+        },
+      },
     },
   };
 });
