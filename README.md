@@ -10,23 +10,26 @@
 - **万年历** — 公历/农历日期查询，支持节假日显示、天干地支、生肖、节气
 - **油价查询** — 查询全国各地最新 92#、95# 汽油及 0# 柴油价格
 - **种子转磁力链** — 将 Torrent 文件转换为 Magnet 链接，支持批量转换及导出
+- **发票合并** — 多张发票 PDF 合并到 A4 页面，支持 @dnd-kit 拖拽排序、2/4 张布局、导出打印
 - **暗色模式** — 支持深色/浅色/跟随系统主题切换
 - **响应式设计** — 移动端/桌面端自适应布局
 - **全局通知** — 操作成功/失败实时 Toast 提示
 
 ## 🛠️ 技术栈
 
-| 分类    | 技术                            |
-| ------- | ------------------------------- |
-| 框架    | React 19 + TypeScript 6         |
-| 构建    | Vite 8                          |
-| 样式    | Tailwind CSS 4                  |
-| UI 组件 | Base UI + shadcn/ui (base-maia) |
-| 图标    | Hugeicons                       |
-| 路由    | react-router 8                  |
-| HTTP    | axios                           |
-| 提示框  | sonner                          |
-| 日期    | dayjs + lunisolar               |
+| 分类     | 技术                            |
+| -------- | ------------------------------- |
+| 框架     | React 19 + TypeScript 6         |
+| 构建     | Vite 8                          |
+| 样式     | Tailwind CSS 4                  |
+| UI 组件  | Base UI + shadcn/ui (base-maia) |
+| 图标     | Hugeicons                       |
+| 路由     | react-router 8                  |
+| HTTP     | axios                           |
+| 提示框   | sonner                          |
+| 日期     | dayjs + lunisolar               |
+| PDF 合并 | pdf-lib                         |
+| 拖拽排序 | @dnd-kit/react + @dnd-kit/dom   |
 
 ## 🚀 快速开始
 
@@ -71,7 +74,7 @@ hanekawa-tools/
 │   ├── lib/              # 工具函数
 │   ├── pages/            # 页面组件（自动生成路由）
 │   │   ├── query/        # 查询类工具（日历、油价）
-│   │   └── transform/    # 转换类工具（种子转磁力链）
+│   │   └── transform/    # 转换类工具（种子转磁力链、发票合并）
 │   ├── router/           # 路由配置
 │   └── types/            # 全局类型声明
 ├── vite.config.ts
@@ -120,7 +123,7 @@ export const newApi = createApi<ResponseType>({
 ## 🎨 设计规范
 
 - **颜色主题**：基于 shadcn/ui 的 olive 配色方案
-- **字体**：LXGW WenKai（CDN）+ Inter Variable + Figtree Variable
+- **字体**：LXGW WenKai（开发环境本地包，生产环境 CDN）+ Inter Variable + Figtree Variable
 - **深色模式**：通过 CSS 变量自动切换
 - **圆角**：4xl（`rounded-4xl`）
 - **动画**：使用 `tw-animate-css` 提供的过渡效果

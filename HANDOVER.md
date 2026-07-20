@@ -1,7 +1,7 @@
 # 项目交接文档
 
-> 最后更新：2026-07-17
-> 最新 commit：`aee5e03d` (feat: oil price highlight + build optimizations)
+> 最后更新：2026-07-20
+> 最新 commit：`8e0353c0` (feat: invoice merge + font switch plugin)
 > 仓库地址：git@github.com:hanekawa-shiki/hanekawa-tools.git
 
 ---
@@ -22,6 +22,9 @@
 | 日期         | dayjs                                  | 1.11.21 |
 | 农历         | lunisolar                              | 2.6.0   |
 | Torrent 解析 | parse-torrent                          | 11.0.21 |
+| PDF 合并     | pdf-lib                                | 1.17.1  |
+| 拖拽排序     | @dnd-kit/react + @dnd-kit/dom          | 0.5.0   |
+| 本地字体     | lxgw-wenkai-webfont                    | 1.7.0   |
 | 包管理       | pnpm                                   | 10.34.4 |
 | Node         | Node.js                                | >=24    |
 | Lint         | @antfu/eslint-config                   | 9.1.0   |
@@ -91,7 +94,8 @@ hanekawa-tools/
 │   │   │       ├── CalendarMonthGrid.tsx   # 月历网格
 │   │   │       └── CalendarNav.tsx         # 导航栏（Popover + MonthPicker 年月选择 + 一周起始日）
 │   │   └── transform/
-│   │       └── torrent2magnet.tsx  # 种子转磁力链工具（支持逐条删除 + 清除全部）
+│   │       ├── torrent2magnet.tsx  # 种子转磁力链工具（支持逐条删除 + 清除全部）
+│   │       └── invoice-merge.tsx   # 发票合并工具（@dnd-kit 拖拽排序 + pdf-lib 导出 A4 PDF）
 │   ├── router/
 │   │   ├── auto-routes.ts         # import.meta.glob 自动路由生成
 │   │   ├── config.ts              # 路由配置（pageMeta/dirMeta/icons/excludes）
@@ -109,8 +113,9 @@ hanekawa-tools/
 │           ├── calendar.d.ts      # 日历页面类型
 │           └── torrent2magnet.d.ts# 种子转磁力链类型（TorrentInfo 等）
 ├── components.json                # shadcn 配置（base-maia 风格，hugeicons 图标库）
-├── vite.config.ts                 # Vite 配置（env/ 目录 + API proxy + rolldownOptions + Brotli 压缩）
+├── vite.config.ts                 # Vite 配置（env/ 目录 + API proxy + fontSwitch + Brotli 压缩）
 └── vite-plugins/
+    ├── fontSwitch.ts              # 字体切换插件（dev 用本地包，prod 用 CDN）
     └── htmlBuildTime.ts           # 构建时间注入到 HTML
 ```
 
@@ -179,23 +184,25 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 
 ### ✅ 已完成的功能
 
-| 功能            | 状态    | 关键文件                                                          |
-| --------------- | ------- | ----------------------------------------------------------------- |
-| 自动路由系统    | ✅ 完成 | `src/router/auto-routes.ts`, `config.ts`                          |
-| 侧边栏导航      | ✅ 完成 | `src/components/nav-main.tsx`, `app-sidebar.tsx`                  |
-| 头像区域        | ✅ 完成 | `src/components/app-sidebar.tsx`（头像在 SidebarFooter）          |
-| 主题切换        | ✅ 完成 | `src/components/mode-toggle.tsx`, `theme-provider.tsx`            |
-| 日历万年历      | ✅ 完成 | `src/pages/query/calendar.tsx` + 5个子组件（Calendar* 前缀）      |
-| 日历节假日接口  | ✅ 完成 | `src/data/holidays.ts`（从 worker API 获取 + 内存缓存）           |
-| 油价查询        | ✅ 完成 | `src/pages/query/oil-prices.tsx`（全国油价，PC 双列/移动单列）    |
-| 种子转磁力链    | ✅ 完成 | `src/pages/transform/torrent2magnet.tsx`（含逐条删除 + 清除全部） |
-| 404 页面        | ✅ 完成 | `src/pages/404.tsx`                                               |
-| API 请求封装    | ✅ 完成 | `src/lib/request.ts`, `src/api/request.ts`, `src/api/index.ts`    |
-| 全局 Toast 通知 | ✅ 完成 | `sonner`，按类型着色图标（success/info/warning/error）            |
-| 多环境构建配置  | ✅ 完成 | `env/.env`, `env/.env.cf`, `env/.env.gh`                          |
-| Base UI 迁移    | ✅ 完成 | 所有 `asChild` → `render` 语法已转换                              |
-| hugeicons 迁移  | ✅ 完成 | 所有 `lucide-react` → `hugeicons` 已替换                          |
-| radix-ui 移除   | ✅ 完成 | `pnpm remove radix-ui lucide-react`                               |
+| 功能            | 状态    | 关键文件                                                                            |
+| --------------- | ------- | ----------------------------------------------------------------------------------- |
+| 自动路由系统    | ✅ 完成 | `src/router/auto-routes.ts`, `config.ts`                                            |
+| 侧边栏导航      | ✅ 完成 | `src/components/nav-main.tsx`, `app-sidebar.tsx`                                    |
+| 头像区域        | ✅ 完成 | `src/components/app-sidebar.tsx`（头像在 SidebarFooter）                            |
+| 主题切换        | ✅ 完成 | `src/components/mode-toggle.tsx`, `theme-provider.tsx`                              |
+| 日历万年历      | ✅ 完成 | `src/pages/query/calendar.tsx` + 5个子组件（Calendar* 前缀）                        |
+| 日历节假日接口  | ✅ 完成 | `src/data/holidays.ts`（从 worker API 获取 + 内存缓存）                             |
+| 油价查询        | ✅ 完成 | `src/pages/query/oil-prices.tsx`（全国油价，PC 双列/移动单列）                      |
+| 种子转磁力链    | ✅ 完成 | `src/pages/transform/torrent2magnet.tsx`（含逐条删除 + 清除全部）                   |
+| 404 页面        | ✅ 完成 | `src/pages/404.tsx`                                                                 |
+| API 请求封装    | ✅ 完成 | `src/lib/request.ts`, `src/api/request.ts`, `src/api/index.ts`                      |
+| 全局 Toast 通知 | ✅ 完成 | `sonner`，按类型着色图标（success/info/warning/error）                              |
+| 多环境构建配置  | ✅ 完成 | `env/.env`, `env/.env.cf`, `env/.env.gh`                                            |
+| Base UI 迁移    | ✅ 完成 | 所有 `asChild` → `render` 语法已转换                                                |
+| hugeicons 迁移  | ✅ 完成 | 所有 `lucide-react` → `hugeicons` 已替换                                            |
+| radix-ui 移除   | ✅ 完成 | `pnpm remove radix-ui lucide-react`                                                 |
+| 发票合并工具    | ✅ 完成 | `src/pages/transform/invoice-merge.tsx`（@dnd-kit 拖拽排序 + pdf-lib PDF 合并导出） |
+| 字体切换插件    | ✅ 完成 | `vite-plugins/fontSwitch.ts`（dev 用本地 lxgw-wenkai-webfont 包，prod 用 CDN）      |
 
 ### 🟡 待完善 / 已知问题
 
@@ -231,7 +238,7 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 > - 多环境构建：dev 走 vite proxy，CF 走相对路径 `/api`，GH 走 worker 完整 URL
 > - ESLint 配置在 `eslint.config.mjs`（@antfu/eslint-config），格式化用 Prettier
 >
-> 项目当前功能包含：自动路由系统、侧边栏导航、头像区域、主题切换、日历万年历（含节假日 API 接口）、油价查询（全国各地最新油价）、种子转磁力链（含逐条删除 + 清除全部）、404 页面、按类型着色的全局 Toast 通知。
+> 项目当前功能包含：自动路由系统、侧边栏导航、头像区域、主题切换、日历万年历（含节假日 API 接口）、油价查询（全国各地最新油价）、种子转磁力链（含逐条删除 + 清除全部）、发票合并（@dnd-kit 拖拽排序 + pdf-lib A4 PDF 合并导出）、字体切换插件（dev 本地包 / prod CDN）、404 页面、按类型着色的全局 Toast 通知。
 >
 > 请先阅读 `HANDOVER.md` 了解完整项目结构，然后告诉我你想做的下一步。
 
