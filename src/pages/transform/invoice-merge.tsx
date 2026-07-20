@@ -201,7 +201,7 @@ export default function InvoiceMerge() {
   const [perPage, setPerPage] = useState<2 | 4>(4);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const sortContext = useRef<SortContext>({ sourceIndex: -1 });
+  const sortContextRef = useRef<SortContext>({ sourceIndex: -1 });
 
   // 保持 ref 与 state 同步
   useEffect(() => {
@@ -423,7 +423,7 @@ export default function InvoiceMerge() {
 
       {invoices.length > 0 && (
         <DragDropProvider>
-          <SortMonitor context={sortContext} setInvoices={setInvoices} />
+          <SortMonitor context={sortContextRef} setInvoices={setInvoices} />
           <div className="mt-6 space-y-4">
             {Array.from({ length: totalPages }, (_, pageIdx) => {
               const startIdx = pageIdx * perPage;

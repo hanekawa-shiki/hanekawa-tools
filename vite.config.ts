@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { VitePWA } from 'vite-plugin-pwa';
 import { fontSwitch } from './vite-plugins/fontSwitch';
 import htmlBuildTime from './vite-plugins/htmlBuildTime';
 
@@ -24,6 +25,69 @@ export default defineConfig(({ mode }) => {
       }),
       htmlBuildTime(),
       fontSwitch(mode),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.svg'],
+        manifest: {
+          name: 'hanekawa-tools',
+          short_name: 'hanekawa-tools',
+          description: '日常小工具集合 - 万年历、油价查询、种子转磁力链、发票合并等实用工具',
+          theme_color: '#ffffff',
+          background_color: '#ffffff',
+          display: 'standalone',
+          scope: '/',
+          start_url: '/',
+          icons: [
+            {
+              src: '/favicon.svg',
+              sizes: 'any',
+              type: 'image/svg+xml',
+              purpose: 'any',
+            },
+            {
+              src: '/favicon.svg',
+              sizes: 'any',
+              type: 'image/svg+xml',
+              purpose: 'maskable',
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,svg,png,woff,woff2}'],
+          runtimeCaching: [
+            {
+              // 缓存 CDN 字体 CSS
+              urlPattern: /^https:\/\/cdnjs\.cloudflare\.com\/.*$/,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'cdn-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 天
+                },
+              },
+            },
+            {
+              // 缓存 API 响应（节假日、油价）
+              urlPattern: /\/api\//,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24, // 1 天
+                },
+                networkTimeoutSeconds: 5,
+              },
+            },
+          ],
+          navigateFallback: '/index.html',
+          navigateFallbackDenylist: [/^\/api\//],
+        },
+        devOptions: {
+          enabled: false,
+        },
+      }),
       ...(mode !== 'cf'
         ? [
             viteCompression({
