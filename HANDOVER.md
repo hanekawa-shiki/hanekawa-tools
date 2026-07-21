@@ -31,7 +31,9 @@
 | Lint         | @antfu/eslint-config                   | 9.1.0         |
 | Formatter    | Prettier + prettier-plugin-tailwindcss | 3.9.5         |
 
-**已移除**：`@radix-ui/*`（已迁移到 Base UI）、`lucide-react`（已迁移到 hugeicons）、`date-fns`（未使用）、`next-themes`（改用项目自身的 ThemeProvider）、`@dnd-kit/dom`（仅用 `@dnd-kit/react`）
+**已移除**：`@radix-ui/*`（已迁移到 Base UI）、`lucide-react`（已迁移到 hugeicons）、`date-fns`（未使用）、`next-themes`（改用项目自身的 ThemeProvider）、`@dnd-kit/dom`（仅用 `@dnd-kit/react`）、`@fontsource-variable/inter`（未在 font-stack 中使用）、`https-proxy-agent`（源码中未引用）
+
+**已移至 devDependencies**：`tailwindcss`、`@tailwindcss/vite`、`tw-animate-css`（均为构建时工具，不参与运行时）
 
 ---
 
@@ -243,19 +245,23 @@ calendar.tsx 原 500+ 行，已拆分为 7 个文件：
 
 ### 🔧 已优化的问题
 
-| 优化项                      | 详情                                                                   |
-| --------------------------- | ---------------------------------------------------------------------- |
-| 移除未使用的依赖            | `date-fns`、`lucide-react`、`next-themes`、`@dnd-kit/dom`（共 4 个包） |
-| Sonner 主题 Provider 修复   | 从 `next-themes` 改为项目自身的 `@/components/theme-provider`          |
-| HTML lang 属性              | `lang="en"` → `lang="zh-CN"`                                           |
-| CSS @layer base 合并        | 合并两个重复的 `@layer base` 块，消除重复的 `*` 和 `html` 规则         |
-| 移除无效 'use client' 指令  | `app-sidebar.tsx` 中移除 Next.js 专用指令（这是 Vite 项目）            |
-| 菜单项计算缓存              | `AppSidebar` 中用 `useMemo` 缓存 `getRouteMenuItems()`                 |
-| Suspense 边界               | 所有自动路由组件包裹 `<Suspense>`，确保代码分割后正确加载              |
-| calendar-utils 重复变量     | 移除 `dateKey`（与 `dateStr` 完全相同）                                |
-| className 拼写修复          | `break-al` → `break-all`                                               |
-| shadcn 移至 devDependencies | CLI 工具从 dependencies 移至 devDependencies                           |
-| 构建代码分割                | Vite manualChunks 拆分第三方库为 7 个 vendor chunk                     |
+| 优化项                           | 详情                                                                   |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| 移除未使用的依赖                 | `date-fns`、`lucide-react`、`next-themes`、`@dnd-kit/dom`（共 4 个包） |
+| Sonner 主题 Provider 修复        | 从 `next-themes` 改为项目自身的 `@/components/theme-provider`          |
+| HTML lang 属性                   | `lang="en"` → `lang="zh-CN"`                                           |
+| CSS @layer base 合并             | 合并两个重复的 `@layer base` 块，消除重复的 `*` 和 `html` 规则         |
+| 移除无效 'use client' 指令       | `app-sidebar.tsx` 中移除 Next.js 专用指令（这是 Vite 项目）            |
+| 菜单项计算缓存                   | `AppSidebar` 中用 `useMemo` 缓存 `getRouteMenuItems()`                 |
+| Suspense 边界                    | 所有自动路由组件包裹 `<Suspense>`，确保代码分割后正确加载              |
+| calendar-utils 重复变量          | 移除 `dateKey`（与 `dateStr` 完全相同）                                |
+| className 拼写修复               | `break-al` → `break-all`                                               |
+| shadcn 移至 devDependencies      | CLI 工具从 dependencies 移至 devDependencies                           |
+| 构建代码分割                     | Vite manualChunks 拆分第三方库为 7 个 vendor chunk                     |
+| 移除 @fontsource-variable/inter  | 导入了但未在 font-stack 中使用，为死代码                               |
+| 移除 https-proxy-agent           | devDependencies 中的包但源码中无任何引用                               |
+| tailwindcss 移至 devDependencies | `tailwindcss`、`@tailwindcss/vite`、`tw-animate-css` 均为构建时工具    |
+| 移除 CSS 死代码                  | 删除 `@import '@fontsource-variable/inter'`                            |
 
 ### 🟡 待完善 / 已知问题
 
