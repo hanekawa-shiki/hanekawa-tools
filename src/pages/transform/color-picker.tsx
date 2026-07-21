@@ -172,8 +172,10 @@ const PRESET_COLORS = [
   '#FFFFFF',
 ];
 
+const THEME_PRIMARY = '#008236';
+
 export default function ColorPickerPage() {
-  const [hexInput, setHexInput] = useState('#FFD600');
+  const [hexInput, setHexInput] = useState(THEME_PRIMARY);
   const [alpha, setAlpha] = useState(100);
 
   const isValid = isValidHex(hexInput);
@@ -181,7 +183,7 @@ export default function ColorPickerPage() {
     ? hexInput.startsWith('#')
       ? hexInput
       : `#${hexInput}`
-    : '#FFD600';
+    : THEME_PRIMARY;
 
   const rgb = useMemo(() => hexToRgb(normalizedHex), [normalizedHex]);
   const hsl = useMemo(() => rgbToHsl(rgb.r, rgb.g, rgb.b), [rgb.r, rgb.g, rgb.b]);
