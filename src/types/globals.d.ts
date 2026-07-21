@@ -5,5 +5,6 @@
 /// <reference path="./theme.d.ts" />
 /// <reference path="./pages/calendar.d.ts" />
 /// <reference path="./pages/torrent2magnet.d.ts" />
+/// <reference path="./mime-db.d.ts" />
 
 export {};

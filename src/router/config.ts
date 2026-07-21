@@ -43,10 +43,15 @@ const config: RouterConfig = {
       icon: 'Layers01Icon',
       description: '将多张发票 PDF 合并到 A4 页面上，支持 2 张或 4 张排列，拖拽排序后导出打印。',
     },
-    '/color-picker': {
+    '/transform/color-picker': {
       title: '取色器',
       icon: 'ColorPickerIcon',
       description: '在线取色器，支持 HEX、RGB、HSL、HSV、CMYK 等多种颜色格式一键复制。',
+    },
+    '/query/media-types': {
+      title: 'Media Types',
+      icon: 'FileTypeIcon',
+      description: '查询全部 Media Type（MIME 类型），支持文件后缀和类型名模糊搜索。',
     },
   },
 
