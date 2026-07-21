@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       htmlBuildTime(),
       fontSwitch(mode),
       VitePWA({
-        registerType: 'autoUpdate',
+        registerType: 'prompt',
         includeAssets: ['favicon.svg'],
         manifest: {
           name: 'hanekawa-tools',

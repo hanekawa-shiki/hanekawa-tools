@@ -14,29 +14,32 @@
 - **暗色模式** — 支持深色/浅色/跟随系统主题切换
 - **响应式设计** — 移动端/桌面端自适应布局
 - **全局通知** — 操作成功/失败实时 Toast 提示
+- **PWA 支持** — 可安装为本地应用，支持离线访问与新版本更新提示
+- **代码分割** — 按路由懒加载 + 第三方库分 chunk，优化首屏加载
 
 ## 🛠️ 技术栈
 
-| 分类     | 技术                            |
-| -------- | ------------------------------- |
-| 框架     | React 19 + TypeScript 6         |
-| 构建     | Vite 8                          |
-| 样式     | Tailwind CSS 4                  |
-| UI 组件  | Base UI + shadcn/ui (base-maia) |
-| 图标     | Hugeicons                       |
-| 路由     | react-router 8                  |
-| HTTP     | axios                           |
-| 提示框   | sonner                          |
-| 日期     | dayjs + lunisolar               |
-| PDF 合并 | pdf-lib                         |
-| 拖拽排序 | @dnd-kit/react + @dnd-kit/dom   |
+| 分类     | 技术                             |
+| -------- | -------------------------------- |
+| 框架     | React 19 + TypeScript 6          |
+| 构建     | Vite 8                           |
+| 样式     | Tailwind CSS 4                   |
+| UI 组件  | Base UI + shadcn/ui (base-maia)  |
+| 图标     | Hugeicons                        |
+| 路由     | react-router 8                   |
+| HTTP     | axios                            |
+| 提示框   | sonner                           |
+| 日期     | dayjs + lunisolar                |
+| PDF 合并 | pdf-lib                          |
+| 拖拽排序 | @dnd-kit/react                   |
+| PWA      | vite-plugin-pwa + workbox-window |
 
 ## 🚀 快速开始
 
 ### 环境要求
 
 - Node.js >= 24
-- pnpm 10.34.4
+- pnpm 10.34.5
 
 ### 安装依赖
 
@@ -68,6 +71,7 @@ hanekawa-tools/
 ├── src/
 │   ├── api/              # API 接口层
 │   ├── components/       # 公共组件 + shadcn/ui
+│   │   └── sw-update-toast.tsx  # PWA 版本更新提示
 │   ├── data/             # 数据层（节假日等）
 │   ├── hooks/            # 自定义 Hooks
 │   ├── layout/           # 布局组件
@@ -75,8 +79,11 @@ hanekawa-tools/
 │   ├── pages/            # 页面组件（自动生成路由）
 │   │   ├── query/        # 查询类工具（日历、油价）
 │   │   └── transform/    # 转换类工具（种子转磁力链、发票合并）
-│   ├── router/           # 路由配置
+│   ├── router/           # 路由配置（自动路由 + 代码分割）
 │   └── types/            # 全局类型声明
+├── vite-plugins/         # 自定义 Vite 插件
+│   ├── fontSwitch.ts     # 字体切换（dev 本地 / prod CDN）
+│   └── htmlBuildTime.ts  # 构建时间注入
 ├── vite.config.ts
 └── package.json
 ```
@@ -125,8 +132,15 @@ export const newApi = createApi<ResponseType>({
 - **颜色主题**：基于 shadcn/ui 的 olive 配色方案
 - **字体**：LXGW WenKai（开发环境本地包，生产环境 CDN）+ Inter Variable + Figtree Variable
 - **深色模式**：通过 CSS 变量自动切换
-- **圆角**：4xl（`rounded-4xl`）
 - **动画**：使用 `tw-animate-css` 提供的过渡效果
+
+## ⚡ 性能优化
+
+- **路由懒加载**：所有页面组件通过 `React.lazy` + `Suspense` 按需加载
+- **代码分割**：Vite `manualChunks` 将第三方库拆分为独立 chunk（react、pdf-lib、dnd-kit、icons 等）
+- **Brotli 压缩**：构建产物使用 Brotli 级别 11 压缩
+- **PWA 离线缓存**：Workbox 预缓存静态资源 + API 响应 NetworkFirst 策略
+- **节假日数据缓存**：内存 Map 缓存，避免重复请求
 
 ## 📝 许可证
 
