@@ -51,7 +51,7 @@ const config: RouterConfig = {
     '/query/media-types': {
       title: 'Media Types',
       icon: 'FileTypeIcon',
-      description: '查询全部 Media Type（MIME 类型），支持文件后缀和类型名模糊搜索。',
+      description: '查询全部 Media Type(MIME 类型)，支持文件后缀和类型名模糊搜索。',
     },
   },
 

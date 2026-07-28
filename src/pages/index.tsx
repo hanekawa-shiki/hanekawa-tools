@@ -11,30 +11,20 @@ interface ToolItem {
 }
 
 function getAllTools(): ToolItem[] {
-  const tools: ToolItem[] = [];
   const { pageMeta } = config;
-
   if (!pageMeta) {
-    return tools;
+    return [];
   }
 
-  for (const [path, meta] of Object.entries(pageMeta)) {
-    if (path === '/') {
-      continue;
-    }
-    if (meta.hidden) {
-      continue;
-    }
-
-    tools.push({
+  return Object.entries(pageMeta)
+    .filter(([path, meta]) => path !== '/' && !meta.hidden)
+    .map(([path, meta]) => ({
       title: meta.title ?? path,
       description: meta.description ?? '',
       icon: meta.icon !== undefined ? resolveIcon(meta.icon, 'size-full') : undefined,
       url: path,
-    });
-  }
-
-  return tools;
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export default function HomePage() {
