@@ -1,4 +1,4 @@
-# Hanekawa Tools
+# Hanekawa Tools React
 
 [![code style](https://antfu.me/badge-code-style.svg)](https://github.com/antfu/eslint-config)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
