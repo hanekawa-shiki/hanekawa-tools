@@ -60,7 +60,9 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
           <>
             <CollapsibleTrigger
               ref={triggerRef}
-              render={<SidebarMenuAction className="data-[state=open]:rotate-90" />}
+              render={
+                <SidebarMenuAction className="transition-transform duration-200 data-panel-open:rotate-90" />
+              }
             >
               <HugeiconsIcon icon={ChevronRightIcon} size={16} />
               <span className="sr-only">Toggle</span>
