@@ -92,7 +92,7 @@ export default defineConfig(({ mode }) => {
         ? [
             viteCompression({
               algorithm: 'brotliCompress',
-              compressionOptions: { level: 11 },
+              compressionOptions: { level: 6 },
             }),
           ]
         : []),
@@ -122,7 +122,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       outDir: env.VITE_OUT_DIR || 'dist',
       reportCompressedSize: true,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           manualChunks(id: string) {
             if (id.includes('node_modules')) {
@@ -146,6 +146,18 @@ export default defineConfig(({ mode }) => {
               }
               if (id.includes('tailwindcss') || id.includes('tw-animate')) {
                 return 'vendor-css';
+              }
+              if (id.includes('axios')) {
+                return 'vendor-http';
+              }
+              if (id.includes('sonner')) {
+                return 'vendor-sonner';
+              }
+              if (id.includes('react-day-picker')) {
+                return 'vendor-daypicker';
+              }
+              if (id.includes('@base-ui')) {
+                return 'vendor-base-ui';
               }
             }
             return undefined;
