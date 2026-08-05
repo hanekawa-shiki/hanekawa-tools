@@ -6,8 +6,8 @@ import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
-import { fontSwitch } from './vite-plugins/fontSwitch';
-import htmlBuildTime from './vite-plugins/htmlBuildTime';
+import { fontSwitch } from './vite-plugins/fontSwitch.ts';
+import htmlBuildTime from './vite-plugins/htmlBuildTime.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
