@@ -1,4 +1,4 @@
-import type parseTorrent from 'parse-torrent';
+import type { Instance as TorrentInstance } from 'parse-torrent';
 import {
   CheckIcon,
   Copy01Icon,
@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 
 const MAX_FILES = 100;
 
-async function parseTorrentFile(file: File): Promise<parseTorrent.Instance> {
+async function parseTorrentFile(file: File): Promise<TorrentInstance> {
   return new Promise((resolve, reject) => {
     parseTorrentRemote(file, (err, torrent) => {
       if (err !== undefined && err !== null) {
@@ -83,7 +83,7 @@ export default function Torrent2Magnet() {
       for (const file of Array.from(files)) {
         try {
           const torrent = await parseTorrentFile(file);
-          const magnet = toMagnetURI(torrent);
+          const magnet = toMagnetURI(torrent as Parameters<typeof toMagnetURI>[0]);
           results.push({
             fileName: file.name,
             magnet,
